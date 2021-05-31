@@ -78,6 +78,7 @@ object SerializedMessageCodec {
 
     "net.bdew.lib.multiblock.data.RSMode$",
 
+    "[B",
     "net.bdew.lib.network.NBTTagCompoundSerialize",
     "net.bdew.lib.network.ItemStackSerialize",
 
