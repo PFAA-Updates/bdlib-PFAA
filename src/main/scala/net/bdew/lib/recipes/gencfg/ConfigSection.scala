@@ -21,6 +21,8 @@ case class EntryStr(v: String) extends ConfigEntry
 
 case class EntryNumList(v: List[Double]) extends ConfigEntry
 
+case class EntryStrList(v: List[String]) extends ConfigEntry
+
 case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(String, ConfigEntry)] {
   var raw = Map.empty[String, ConfigEntry].withDefault(x => sys.error("Config value '%s%s' is missing".format(pfx, x)))
 
@@ -41,6 +43,7 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
 
   def getDouble(id: String) = getRaw(id, classOf[EntryDouble]).v
   def getString(id: String) = getRaw(id, classOf[EntryStr]).v
+  def getStringList(id: String) = getRaw(id, classOf[EntryStrList]).v
   def getDoubleList(id: String) = getRaw(id, classOf[EntryNumList]).v
   def getSection(id: String) = getRaw(id, classOf[ConfigSection])
 
