@@ -24,8 +24,9 @@ trait GenericConfigParser extends RecipeParser {
   def cvNum = signedNumber ^^ EntryDouble
   def cvStr = str ^^ EntryStr
   def cvNumList = "=" ~> "{" ~> signedNumber.* <~ "}" ^^ EntryNumList
+  def cvStrList = "=" ~> "[" ~> str.* <~ "]" ^^ EntryStrList
 
-  def cfgValue = cvNum | cvStr | cvNumList
+  def cfgValue = cvNum | cvStr | cvNumList | cvStrList
 
   def ceSub = cfgBlock ^^ { case (id, st) => CfgSection(id, st) }
   def ceAssign = str ~ "=" ~ cfgValue ^^ { case k ~ eq ~ v => CfgVal(k, v) }
