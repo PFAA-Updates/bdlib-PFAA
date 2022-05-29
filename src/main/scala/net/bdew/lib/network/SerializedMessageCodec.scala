@@ -70,6 +70,10 @@ object SerializedMessageCodec {
     "scala.Enumeration$Val",
     "scala.Enumeration$Value",
     "scala.collection.mutable.HashMap",
+    "scala.Enumeration$ValueSet",
+    "scala.Enumeration$ValueSet$",
+    "scala.collection.immutable.BitSet",
+    "scala.collection.immutable.BitSet$BitSet1",
 
     "java.lang.Float",
     "java.lang.Double",
@@ -109,7 +113,15 @@ object SerializedMessageCodec {
     "net.bdew.pressure.network.MsgTankUpdate",
 
     // advanced generators
-    "net.bdew.generators.network.PktDumpBuffers"
+    "net.bdew.generators.network.PktDumpBuffers",
+
+    // compacter
+    "net.bdew.compacter.network.MsgSetRecurseMode",
+    "net.bdew.compacter.network.MsgSetCraftMode",
+    "net.bdew.compacter.network.MsgSetRsMode",
+    "net.bdew.compacter.blocks.compacter.RecurseMode$",
+    "net.bdew.compacter.blocks.compacter.CraftMode",
+    "net.bdew.compacter.blocks.compacter.CraftMode$"
 
     // add other bdew mods in configurations if you need. this is as far as I'd like to support - glee8e
   )
