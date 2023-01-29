@@ -14,7 +14,11 @@ import net.minecraft.nbt.NBTTagCompound
 
 import scala.collection.mutable
 
-case class DataSlotOutputConfig(name: String, parent: DataSlotContainer, slots: Int) extends DataSlot {
+case class DataSlotOutputConfig(
+    name: String,
+    parent: DataSlotContainer,
+    slots: Int
+) extends DataSlot {
   val map = collection.mutable.Map.empty[Int, OutputConfig]
 
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
@@ -49,5 +53,7 @@ object DataSlotOutputConfig {
 
   import scala.language.implicitConversions
 
-  implicit def dataSlotOutputConfig2map(v: DataSlotOutputConfig): mutable.Map[Int, OutputConfig] = v.map
+  implicit def dataSlotOutputConfig2map(
+      v: DataSlotOutputConfig
+  ): mutable.Map[Int, OutputConfig] = v.map
 }

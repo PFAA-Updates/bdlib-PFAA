@@ -21,14 +21,24 @@ import net.minecraft.tileentity.TileEntity
 class BlockManager(creativeTab: CreativeTabs) {
   def regBlock[T <: NamedBlock](block: T): T = regBlock(block, block.name)
 
-  def regSpecial[T <: NamedBlock](block: T, addStack: Boolean = false, skipTileEntityReg: Boolean = false): T =
+  def regSpecial[T <: NamedBlock](
+      block: T,
+      addStack: Boolean = false,
+      skipTileEntityReg: Boolean = false
+  ): T =
     regBlock(block, block.name, addStack, skipTileEntityReg)
 
-  def regBlock[T <: Block](block: T, name: String, addStack: Boolean = false, skipTileEntityReg: Boolean = false): T = {
-    val itemClass: Class[_ <: ItemBlock] = if (block.isInstanceOf[HasItemBlock])
-      block.asInstanceOf[HasItemBlock].ItemBlockClass
-    else
-      classOf[ItemBlock]
+  def regBlock[T <: Block](
+      block: T,
+      name: String,
+      addStack: Boolean = false,
+      skipTileEntityReg: Boolean = false
+  ): T = {
+    val itemClass: Class[_ <: ItemBlock] =
+      if (block.isInstanceOf[HasItemBlock])
+        block.asInstanceOf[HasItemBlock].ItemBlockClass
+      else
+        classOf[ItemBlock]
 
     GameRegistry.registerBlock(block, itemClass, name)
 
@@ -38,17 +48,28 @@ class BlockManager(creativeTab: CreativeTabs) {
       GameRegistry.registerCustomItemStack(name, new ItemStack(block))
 
     if (block.isInstanceOf[HasTE[_]] && !skipTileEntityReg)
-      GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass,
-        "%s.%s".format(Misc.getActiveModId, name))
+      GameRegistry.registerTileEntity(
+        block.asInstanceOf[HasTE[_]].TEClass,
+        "%s.%s".format(Misc.getActiveModId, name)
+      )
 
     return block
   }
 
-  /**
-   * Registers a legacy TE name->class mapping. Stolen from GameRegistry.registerTileEntityWithAlternatives
-   */
-  def registerLegacyTileEntity(name: String, cls: Class[_ <: TileEntity]): Unit = {
-    val teMappings: java.util.Map[String, Class[_]] = ObfuscationReflectionHelper.getPrivateValue(classOf[TileEntity], null, "field_" + "145855_i", "nameToClassMap")
+  /** Registers a legacy TE name->class mapping. Stolen from
+    * GameRegistry.registerTileEntityWithAlternatives
+    */
+  def registerLegacyTileEntity(
+      name: String,
+      cls: Class[_ <: TileEntity]
+  ): Unit = {
+    val teMappings: java.util.Map[String, Class[_]] =
+      ObfuscationReflectionHelper.getPrivateValue(
+        classOf[TileEntity],
+        null,
+        "field_" + "145855_i",
+        "nameToClassMap"
+      )
     if (!teMappings.containsKey(name))
       teMappings.put(name, cls)
   }

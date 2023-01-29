@@ -52,9 +52,13 @@ object ChatHelper {
   }
 
   implicit def str2chat(s: String): ChatComponentText = new ChatComponentText(s)
-  implicit def str2rich(s: String): RichChatComponent = new RichChatComponent(new ChatComponentText(s))
-  implicit def pimpIChatComponent(v: IChatComponent): RichChatComponent = new RichChatComponent(v)
+  implicit def str2rich(s: String): RichChatComponent = new RichChatComponent(
+    new ChatComponentText(s)
+  )
+  implicit def pimpIChatComponent(v: IChatComponent): RichChatComponent =
+    new RichChatComponent(v)
 
   def C(s: String) = new ChatComponentText(s)
-  def L(s: String, params: IChatComponent*) = new ChatComponentTranslation(s, params: _*)
+  def L(s: String, params: IChatComponent*) =
+    new ChatComponentTranslation(s, params: _*)
 }

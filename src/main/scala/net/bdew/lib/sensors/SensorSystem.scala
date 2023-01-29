@@ -20,7 +20,9 @@ abstract class SensorSystem[T, R](defaultResult: R) {
 
   def register[Z <: GenericSensorType[T, R]](s: Z): Z = {
     if (map.isDefinedAt(s.uid))
-      sys.error("Duplicate sensor ID: %s (%s / %s)".format(s.uid, map(s.uid), s))
+      sys.error(
+        "Duplicate sensor ID: %s (%s / %s)".format(s.uid, map(s.uid), s)
+      )
     map += s.uid -> s
     s
   }
@@ -55,22 +57,28 @@ abstract class SensorSystem[T, R](defaultResult: R) {
     override def parameters = Vector(DisabledParameter)
     override def uid = "disabled"
 
-    override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T): GenericSensorParameter = DisabledParameter
-    override def getResult(param: GenericSensorParameter, obj: T): R = defaultResult
+    override def paramClicked(
+        current: GenericSensorParameter,
+        item: ItemStack,
+        button: Int,
+        mod: Int,
+        obj: T
+    ): GenericSensorParameter = DisabledParameter
+    override def getResult(param: GenericSensorParameter, obj: T): R =
+      defaultResult
 
     @SideOnly(Side.CLIENT)
     override def texture = disabledTexture
   }
 
-  object DisabledSensorPair extends SensorPair(DisabledSensor, DisabledParameter)
+  object DisabledSensorPair
+      extends SensorPair(DisabledSensor, DisabledParameter)
 
   def init(): Unit = {
-    BdLib.logDebug("Initialized sensor system %s for mod %s", this.getClass.getName, Misc.getActiveModId)
+    BdLib.logDebug(
+      "Initialized sensor system %s for mod %s",
+      this.getClass.getName,
+      Misc.getActiveModId
+    )
   }
 }
-
-
-
-
-
-

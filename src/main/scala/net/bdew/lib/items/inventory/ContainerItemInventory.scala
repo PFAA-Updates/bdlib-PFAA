@@ -14,8 +14,14 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
 
-class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer) extends BaseContainer(inv) {
-  override def slotClick(slotNum: Int, button: Int, modifiers: Int, player: EntityPlayer): ItemStack = {
+class ContainerItemInventory(inv: InventoryItemAdapter, player: EntityPlayer)
+    extends BaseContainer(inv) {
+  override def slotClick(
+      slotNum: Int,
+      button: Int,
+      modifiers: Int,
+      player: EntityPlayer
+  ): ItemStack = {
     if (slotNum > 0 && slotNum < inventorySlots.size()) {
       val slot = inventorySlots.asInstanceOf[java.util.List[Slot]].get(slotNum)
       if (slot.isSlotInInventory(inv.player.inventory, inv.slot))

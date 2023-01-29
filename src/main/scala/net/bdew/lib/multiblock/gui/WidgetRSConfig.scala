@@ -14,14 +14,26 @@ import java.util.Locale
 import net.bdew.lib.Misc
 import net.bdew.lib.gui.widgets.{WidgetButtonIcon, WidgetSubContainer}
 import net.bdew.lib.gui.{Point, Rect}
-import net.bdew.lib.multiblock.data.{MsgOutputCfgRSMode, OutputConfigRSControllable, RSMode}
+import net.bdew.lib.multiblock.data.{
+  MsgOutputCfgRSMode,
+  OutputConfigRSControllable,
+  RSMode
+}
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 import net.bdew.lib.multiblock.network.NetHandler
 
-class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point) extends WidgetSubContainer(new Rect(p, 16, 16)) {
+class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point)
+    extends WidgetSubContainer(new Rect(p, 16, 16)) {
   def cfg = te.outputConfig(output).asInstanceOf[OutputConfigRSControllable]
 
-  val bt = add(new WidgetButtonIcon(Point(0, 0), clicked, te.resources.btBase, te.resources.btHover))
+  val bt = add(
+    new WidgetButtonIcon(
+      Point(0, 0),
+      clicked,
+      te.resources.btBase,
+      te.resources.btHover
+    )
+  )
 
   val icons = Map(
     RSMode.ALWAYS -> te.resources.btEnabled,
@@ -39,7 +51,8 @@ class WidgetRSConfig(te: CIOutputFaces, output: Int, p: Point) extends WidgetSub
 
   override def draw(mouse: Point) {
     bt.icon = icons(cfg.rsMode)
-    bt.hover = Misc.toLocal("bdlib.rsmode." + cfg.rsMode.toString.toLowerCase(Locale.US))
+    bt.hover =
+      Misc.toLocal("bdlib.rsmode." + cfg.rsMode.toString.toLowerCase(Locale.US))
     super.draw(mouse)
   }
 

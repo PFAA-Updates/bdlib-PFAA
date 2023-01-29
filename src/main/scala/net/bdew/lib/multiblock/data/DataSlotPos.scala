@@ -15,17 +15,21 @@ import net.bdew.lib.data.DataSlotOption
 import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotPos(name: String, parent: DataSlotContainer) extends DataSlotOption[BlockRef] {
+case class DataSlotPos(name: String, parent: DataSlotContainer)
+    extends DataSlotOption[BlockRef] {
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    value foreach (x => t.setTag(name, Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
+    value foreach (x =>
+      t.setTag(name, Misc.applyMutator(x.writeToNBT, new NBTTagCompound))
+    )
   }
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {
-    value = if (t.hasKey(name))
-      Some(BlockRef.fromNBT(t.getCompoundTag(name)))
-    else
-      None
+    value =
+      if (t.hasKey(name))
+        Some(BlockRef.fromNBT(t.getCompoundTag(name)))
+      else
+        None
   }
 }

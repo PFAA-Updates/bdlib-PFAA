@@ -11,9 +11,18 @@ package net.bdew.lib.network
 
 import java.util
 
-import cpw.mods.fml.common.network.{FMLEmbeddedChannel, FMLOutboundHandler, NetworkRegistry}
+import cpw.mods.fml.common.network.{
+  FMLEmbeddedChannel,
+  FMLOutboundHandler,
+  NetworkRegistry
+}
 import cpw.mods.fml.relauncher.Side
-import io.netty.channel.{ChannelFutureListener, ChannelHandler, ChannelHandlerContext, SimpleChannelInboundHandler}
+import io.netty.channel.{
+  ChannelFutureListener,
+  ChannelHandler,
+  ChannelHandlerContext,
+  SimpleChannelInboundHandler
+}
 import net.bdew.lib.{BdLib, Misc}
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.network.NetHandlerPlayServer
@@ -26,11 +35,20 @@ class NetChannel(val name: String) {
   object ServerHandler extends SimpleChannelInboundHandler[Message] {
     def channelRead0(ctx: ChannelHandlerContext, msg: Message) {
       try {
-        val player = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get.asInstanceOf[NetHandlerPlayServer].playerEntity
+        val player = ctx
+          .channel()
+          .attr(NetworkRegistry.NET_HANDLER)
+          .get
+          .asInstanceOf[NetHandlerPlayServer]
+          .playerEntity
         if (serverChain.isDefinedAt(msg, player))
           serverChain(msg, player)
         else
-          BdLib.logWarn("Unable to handle message from user %s: %s", player.getDisplayName, msg)
+          BdLib.logWarn(
+            "Unable to handle message from user %s: %s",
+            player.getDisplayName,
+            msg
+          )
       } catch {
         case e: Throwable => BdLib.logErrorException("Error handling packet", e)
       }
@@ -51,9 +69,15 @@ class NetChannel(val name: String) {
   }
 
   def init() {
-    if (channels != null) sys.error("Attempted to initialize a channel twice (%s)".format(name))
-    channels = NetworkRegistry.INSTANCE.newChannel(name, new SerializedMessageCodec)
-    BdLib.logInfo("Initialized network channel '%s' for mod '%s'", name, Misc.getActiveModId)
+    if (channels != null)
+      sys.error("Attempted to initialize a channel twice (%s)".format(name))
+    channels =
+      NetworkRegistry.INSTANCE.newChannel(name, new SerializedMessageCodec)
+    BdLib.logInfo(
+      "Initialized network channel '%s' for mod '%s'",
+      name,
+      Misc.getActiveModId
+    )
     addHandler(Side.SERVER, ServerHandler)
     addHandler(Side.CLIENT, ClientHandler)
   }
@@ -69,36 +93,77 @@ class NetChannel(val name: String) {
 
   private def addHandler(side: Side, handler: ChannelHandler) {
     val ch = channels.get(side)
-    val name = ch.findChannelHandlerNameForType(classOf[SerializedMessageCodec[this.type]])
+    val name = ch.findChannelHandlerNameForType(
+      classOf[SerializedMessageCodec[this.type]]
+    )
     ch.pipeline().addAfter(name, side + "Handler", handler)
   }
 
   def sendToAll(message: Message) {
-    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL)
-    channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+    channels
+      .get(Side.SERVER)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGET)
+      .set(FMLOutboundHandler.OutboundTarget.ALL)
+    channels
+      .get(Side.SERVER)
+      .writeAndFlush(message)
+      .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
   def sendTo(message: Message, player: EntityPlayerMP) {
-    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER)
-    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player)
-    channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+    channels
+      .get(Side.SERVER)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGET)
+      .set(FMLOutboundHandler.OutboundTarget.PLAYER)
+    channels
+      .get(Side.SERVER)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGETARGS)
+      .set(player)
+    channels
+      .get(Side.SERVER)
+      .writeAndFlush(message)
+      .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
   def sendToAllAround(message: Message, point: NetworkRegistry.TargetPoint) {
-    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT)
-    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point)
-    channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+    channels
+      .get(Side.SERVER)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGET)
+      .set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT)
+    channels
+      .get(Side.SERVER)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGETARGS)
+      .set(point)
+    channels
+      .get(Side.SERVER)
+      .writeAndFlush(message)
+      .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
   def sendToDimension(message: Message, dimensionId: Int) {
-    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION)
-    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(new Integer(dimensionId))
-    channels.get(Side.SERVER).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+    channels
+      .get(Side.SERVER)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGET)
+      .set(FMLOutboundHandler.OutboundTarget.DIMENSION)
+    channels
+      .get(Side.SERVER)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGETARGS)
+      .set(new Integer(dimensionId))
+    channels
+      .get(Side.SERVER)
+      .writeAndFlush(message)
+      .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
   def sendToServer(message: Message) {
-    channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER)
-    channels.get(Side.CLIENT).writeAndFlush(message).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+    channels
+      .get(Side.CLIENT)
+      .attr(FMLOutboundHandler.FML_MESSAGETARGET)
+      .set(FMLOutboundHandler.OutboundTarget.TOSERVER)
+    channels
+      .get(Side.CLIENT)
+      .writeAndFlush(message)
+      .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
   }
 
 }

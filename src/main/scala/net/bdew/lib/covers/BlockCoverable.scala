@@ -24,7 +24,13 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
   @SideOnly(Side.CLIENT)
   override def getRenderType = CoverRenderer.id
 
-  private def getCoverItem(w: IBlockAccess, x: Int, y: Int, z: Int, side: ForgeDirection): Option[(ItemCover, ItemStack, TileCoverable)] = {
+  private def getCoverItem(
+      w: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      side: ForgeDirection
+  ): Option[(ItemCover, ItemStack, TileCoverable)] = {
     val te = getTE(w, x, y, z)
     for {
       coverStack <- Option(te.covers(side).value)
@@ -33,7 +39,17 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
     } yield (coverItem, coverStack, te)
   }
 
-  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, face: Int, xOffs: Float, yOffs: Float, zOffs: Float): Boolean = {
+  override def onBlockActivated(
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      player: EntityPlayer,
+      face: Int,
+      xOffs: Float,
+      yOffs: Float,
+      zOffs: Float
+  ): Boolean = {
     val te = getTE(world, x, y, z)
     val side = Misc.forgeDirection(face)
 
@@ -58,20 +74,37 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
       activeStack <- Option(player.getCurrentEquippedItem)
       activeItem <- Option(activeStack.getItem)
       coverItem <- Misc.asInstanceOpt(activeItem, classOf[ItemCover])
-      if te.isValidCover(side, activeStack) && coverItem.isValidTile(te, activeStack)
+      if te.isValidCover(side, activeStack) && coverItem.isValidTile(
+        te,
+        activeStack
+      )
     } {
       if (!world.isRemote && player.isInstanceOf[EntityPlayerMP]) {
         for {
           oldCover <- Option(te.covers(side).value)
           oldItem <- Misc.asInstanceOpt(oldCover.getItem, classOf[ItemCover])
         } {
-          ItemUtils.throwItemAt(world, te.xCoord + side.offsetX, te.yCoord + side.offsetY, te.zCoord + side.offsetZ, oldItem.onRemove(oldCover))
+          ItemUtils.throwItemAt(
+            world,
+            te.xCoord + side.offsetX,
+            te.yCoord + side.offsetY,
+            te.zCoord + side.offsetZ,
+            oldItem.onRemove(oldCover)
+          )
         }
 
-        te.covers(side) := coverItem.onInstall(te, side, activeStack.splitStack(1), player.asInstanceOf[EntityPlayerMP])
+        te.covers(side) := coverItem.onInstall(
+          te,
+          side,
+          activeStack.splitStack(1),
+          player.asInstanceOf[EntityPlayerMP]
+        )
 
         if (activeStack.stackSize <= 0)
-          player.inventory.setInventorySlotContents(player.inventory.currentItem, null)
+          player.inventory.setInventorySlotContents(
+            player.inventory.currentItem,
+            null
+          )
 
         te.onCoversChanged()
         coverChanged(world, x, y, z, side)
@@ -89,7 +122,13 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
 
   override def canProvidePower = true
 
-  override def isProvidingWeakPower(w: IBlockAccess, x: Int, y: Int, z: Int, side: Int): Int = {
+  override def isProvidingWeakPower(
+      w: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      side: Int
+  ): Int = {
     val direction = Misc.forgeDirection(side).getOpposite
     for ((item, stack, te) <- getCoverItem(w, x, y, z, direction)) {
       if (item.isEmittingSignal(te, direction, stack)) return 15
@@ -97,16 +136,35 @@ trait BlockCoverable[T <: TileCoverable] extends HasTE[T] {
     0
   }
 
-  def coverChanged(w: World, x: Int, y: Int, z: Int, side: ForgeDirection): Unit = {
+  def coverChanged(
+      w: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      side: ForgeDirection
+  ): Unit = {
     val pos = BlockRef(x, y, z).neighbour(side)
     w.notifyBlockOfNeighborChange(pos.x, pos.y, pos.z, pos.block(w).orNull)
   }
 
-  def getCoverIcon(w: IBlockAccess, x: Int, y: Int, z: Int, side: ForgeDirection): Option[IIcon] =
+  def getCoverIcon(
+      w: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      side: ForgeDirection
+  ): Option[IIcon] =
     for ((item, stack, te) <- getCoverItem(w, x, y, z, side))
       yield item.getCoverIcon(te, side, stack)
 
-  override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
+  override def breakBlock(
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      block: Block,
+      meta: Int
+  ) {
     if (!world.isRemote) {
       val te = getTE(world, x, y, z)
       for {

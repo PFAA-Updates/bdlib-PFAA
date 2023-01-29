@@ -17,8 +17,5 @@ case class CfgVal(id: String, value: ConfigEntry) extends CfgEntry
 
 case class CfgSection(id: String, vals: List[CfgEntry]) extends CfgEntry
 
-case class CsCfgSection(id: String, vals: List[CfgEntry]) extends ConfigStatement
-
-
-
-
+case class CsCfgSection(id: String, vals: List[CfgEntry])
+    extends ConfigStatement

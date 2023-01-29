@@ -19,8 +19,21 @@ import net.minecraft.util.{ChatComponentTranslation, IIcon}
 import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.util.ForgeDirection
 
-trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModule[T] with BaseRotatableBlock with GuiProvider {
-  override def onBlockActivated(world: World, x: Int, y: Int, z: Int, player: EntityPlayer, meta: Int, xOffs: Float, yOffs: Float, zOffs: Float): Boolean = {
+trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule]
+    extends BlockModule[T]
+    with BaseRotatableBlock
+    with GuiProvider {
+  override def onBlockActivated(
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      player: EntityPlayer,
+      meta: Int,
+      xOffs: Float,
+      yOffs: Float,
+      zOffs: Float
+  ): Boolean = {
     if (player.isSneaking) return false
     if (world.isRemote) return true
     val te = getTE(world, x, y, z)
@@ -28,7 +41,9 @@ trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModu
       te.config.ensureValid(te.getCore.get)
       doOpenGui(world, x, y, z, player)
     } else {
-      player.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.notconnected"))
+      player.addChatMessage(
+        new ChatComponentTranslation("bdlib.multiblock.notconnected")
+      )
     }
     true
   }
@@ -43,7 +58,13 @@ trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModu
   override def getFacing(world: IBlockAccess, x: Int, y: Int, z: Int) =
     Misc.forgeDirection(world.getBlockMetadata(x, y, z) & 7)
 
-  override def setFacing(world: World, x: Int, y: Int, z: Int, facing: ForgeDirection) = {
+  override def setFacing(
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      facing: ForgeDirection
+  ) = {
     val m = world.getBlockMetadata(x, y, z) & 8
     world.setBlockMetadataWithNotify(x, y, z, m | facing.ordinal(), 3)
     notifyTarget(world, x, y, z)
@@ -59,18 +80,35 @@ trait BlockRedstoneSensorModule[T <: TileRedstoneSensorModule] extends BlockModu
   }
 
   override def getIcon(meta: Int, kind: IconType.Value) = kind match {
-    case IconType.BACK => bottomIcon
+    case IconType.BACK  => bottomIcon
     case IconType.FRONT => if ((meta & 8) == 8) frontIconOn else frontIcon
-    case IconType.SIDE => if ((meta & 8) == 8) sideIconOn else sideIcon
+    case IconType.SIDE  => if ((meta & 8) == 8) sideIconOn else sideIcon
   }
 
   override def canProvidePower = true
 
-  override def isSideSolid(world: IBlockAccess, x: Int, y: Int, z: Int, side: ForgeDirection) = true
+  override def isSideSolid(
+      world: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      side: ForgeDirection
+  ) = true
 
-  override def isProvidingWeakPower(w: IBlockAccess, x: Int, y: Int, z: Int, side: Int) = {
+  override def isProvidingWeakPower(
+      w: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      side: Int
+  ) = {
     val m = w.getBlockMetadata(x, y, z)
-    if (((m & 7) == Misc.forgeDirection(side).getOpposite.ordinal()) && ((m & 8) == 8))
+    if (
+      ((m & 7) == Misc
+        .forgeDirection(side)
+        .getOpposite
+        .ordinal()) && ((m & 8) == 8)
+    )
       15
     else
       0

@@ -16,21 +16,29 @@ import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import org.apache.commons.lang3.StringUtils
 
-case class DataSlotGameProfile(name: String, parent: DataSlotContainer) extends DataSlotVal[GameProfile] {
+case class DataSlotGameProfile(name: String, parent: DataSlotContainer)
+    extends DataSlotVal[GameProfile] {
   override var value: GameProfile = null
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) = {
     value = if (t.hasKey(name + "_uid") || t.hasKey(name + "_name")) {
-      val uId = if (t.hasKey(name + "_uid")) UUID.fromString(t.getString(name + "_uid")) else null
-      val uName = if (t.hasKey(name + "_name")) t.getString(name + "_name") else null
+      val uId =
+        if (t.hasKey(name + "_uid")) UUID.fromString(t.getString(name + "_uid"))
+        else null
+      val uName =
+        if (t.hasKey(name + "_name")) t.getString(name + "_name") else null
       new GameProfile(uId, uName)
     } else null
   }
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) = {
     if (value != null) {
-      Option(value.getId) foreach (id => t.setString(name + "_uid", id.toString))
-      Option(value.getName) filterNot (name => StringUtils.isBlank(name)) foreach (name => t.setString(name + "_name", name))
+      Option(value.getId) foreach (id =>
+        t.setString(name + "_uid", id.toString)
+      )
+      Option(value.getName) filterNot (name =>
+        StringUtils.isBlank(name)
+      ) foreach (name => t.setString(name + "_name", name))
     }
   }
 }

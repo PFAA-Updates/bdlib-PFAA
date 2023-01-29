@@ -15,7 +15,8 @@ import net.bdew.lib.gui._
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
-abstract class SimpleGenericParameter(system: SensorSystem[_, _]) extends GenericSensorParameter(system) {
+abstract class SimpleGenericParameter(system: SensorSystem[_, _])
+    extends GenericSensorParameter(system) {
   @SideOnly(Side.CLIENT)
   def texture: Texture
 
@@ -23,14 +24,22 @@ abstract class SimpleGenericParameter(system: SensorSystem[_, _]) extends Generi
   def textureColor = Color.white
 }
 
-abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends GenericSensorType[T, R](system) {
+abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R])
+    extends GenericSensorType[T, R](system) {
   def parameters: IndexedSeq[GenericSensorParameter]
 
-  override lazy val defaultParameter = parameters.headOption.getOrElse(system.DisabledParameter)
+  override lazy val defaultParameter =
+    parameters.headOption.getOrElse(system.DisabledParameter)
 
   lazy val parameterMap = (parameters map (x => x.uid -> x)).toMap
 
-  override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T) =
+  override def paramClicked(
+      current: GenericSensorParameter,
+      item: ItemStack,
+      button: Int,
+      mod: Int,
+      obj: T
+  ) =
     if (item == null && button == 0 && mod == 0)
       Misc.nextInSeq(parameters, current)
     else if (item == null && button == 1 && mod == 0)
@@ -38,9 +47,12 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
     else
       current
 
-  override def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound) = tag.setString("param", p.uid)
-  override def loadParameter(tag: NBTTagCompound) = parameterMap.getOrElse(tag.getString("param"), system.DisabledParameter)
-  override def isValidParameter(p: GenericSensorParameter, obj: T) = parameters.contains(p)
+  override def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound) =
+    tag.setString("param", p.uid)
+  override def loadParameter(tag: NBTTagCompound) =
+    parameterMap.getOrElse(tag.getString("param"), system.DisabledParameter)
+  override def isValidParameter(p: GenericSensorParameter, obj: T) =
+    parameters.contains(p)
 
   @SideOnly(Side.CLIENT)
   def texture: Texture
@@ -54,12 +66,22 @@ abstract class SimpleGenericSensor[-T, +R](system: SensorSystem[T, R]) extends G
   }
 
   @SideOnly(Side.CLIENT)
-  override def drawParameter(rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit = {
+  override def drawParameter(
+      rect: Rect,
+      target: DrawTarget,
+      obj: T,
+      param: GenericSensorParameter
+  ): Unit = {
     param match {
-      case x: SimpleGenericParameter => target.drawTexture(rect, x.texture, x.textureColor)
-      case _ => target.drawTexture(rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
+      case x: SimpleGenericParameter =>
+        target.drawTexture(rect, x.texture, x.textureColor)
+      case _ =>
+        target.drawTexture(
+          rect,
+          system.DisabledParameter.texture,
+          system.DisabledParameter.textureColor
+        )
     }
 
   }
 }
-

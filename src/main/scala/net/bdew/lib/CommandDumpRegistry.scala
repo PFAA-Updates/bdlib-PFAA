@@ -25,24 +25,47 @@ object CommandDumpRegistry extends CommandBase {
   def getCommandUsage(c: ICommandSender) = "dumpregistry"
 
   def processCommand(sender: ICommandSender, params: Array[String]) {
-    val mcHome = FMLInjectionData.data()(6).asInstanceOf[File] //is there a better way to get this?
+    val mcHome =
+      FMLInjectionData
+        .data()(6)
+        .asInstanceOf[File] // is there a better way to get this?
     val dumpFile = new File(mcHome, "registry.dump")
     val dumpWriter = new BufferedWriter(new FileWriter(dumpFile))
     import scala.collection.JavaConversions._
     try {
       dumpWriter.write("==== BLOCKS ====\n")
-      dumpWriter.write(GameData.getBlockRegistry.map(GameData.getBlockRegistry.getNameForObject).toList.sorted.mkString("\n"))
+      dumpWriter.write(
+        GameData.getBlockRegistry
+          .map(GameData.getBlockRegistry.getNameForObject)
+          .toList
+          .sorted
+          .mkString("\n")
+      )
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ITEMS ====\n")
-      dumpWriter.write(GameData.getItemRegistry.map(GameData.getItemRegistry.getNameForObject).toList.sorted.mkString("\n"))
+      dumpWriter.write(
+        GameData.getItemRegistry
+          .map(GameData.getItemRegistry.getNameForObject)
+          .toList
+          .sorted
+          .mkString("\n")
+      )
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== CUSTOM STACKS ====\n")
       val stacksField = classOf[GameData].getDeclaredField("customItemStacks")
       stacksField.setAccessible(true)
-      val stacksData = stacksField.get(null).asInstanceOf[Table[String, String, ItemStack]]
-      dumpWriter.write(stacksData.cellSet().map(x => x.getRowKey + ":" + x.getColumnKey).toList.sorted.mkString("\n"))
+      val stacksData =
+        stacksField.get(null).asInstanceOf[Table[String, String, ItemStack]]
+      dumpWriter.write(
+        stacksData
+          .cellSet()
+          .map(x => x.getRowKey + ":" + x.getColumnKey)
+          .toList
+          .sorted
+          .mkString("\n")
+      )
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== ORE DICT ====\n")
@@ -55,13 +78,23 @@ object CommandDumpRegistry extends CommandBase {
       dumpWriter.write("\n\n")
 
       dumpWriter.write("==== FLUIDS ====\n")
-      dumpWriter.write(FluidRegistry.getRegisteredFluids.map(_._1).toList.sorted.mkString("\n"))
+      dumpWriter.write(
+        FluidRegistry.getRegisteredFluids.map(_._1).toList.sorted.mkString("\n")
+      )
       dumpWriter.write("\n\n")
 
-      CommandBase.func_152373_a(sender, this, "Registry dumped to " + dumpFile.getCanonicalPath)
+      CommandBase.func_152373_a(
+        sender,
+        this,
+        "Registry dumped to " + dumpFile.getCanonicalPath
+      )
     } catch {
       case e: Throwable =>
-        CommandBase.func_152373_a(sender, this, "Failed to save registry dump: " + e)
+        CommandBase.func_152373_a(
+          sender,
+          this,
+          "Failed to save registry dump: " + e
+        )
         BdLib.logErrorException("Failed to save registry dump", e)
     } finally {
       dumpWriter.close()

@@ -35,7 +35,10 @@ trait CIOutputFaces extends TileController {
       return i
     }
     val pl = getWorldObj.getClosestPlayer(bf.x, bf.y, bf.z, 10)
-    if (pl != null) pl.addChatMessage(new ChatComponentTranslation("bdlib.multiblock.toomanyoutputs"))
+    if (pl != null)
+      pl.addChatMessage(
+        new ChatComponentTranslation("bdlib.multiblock.toomanyoutputs")
+      )
     return -1
   }
 
@@ -56,7 +59,10 @@ trait CIOutputFaces extends TileController {
       (x, n) <- outputFaces
       t <- x.origin.getTile[MIOutput[_]](getWorldObj)
     } {
-      if (!outputConfig.isDefinedAt(n) || !t.outputConfigType.isInstance(outputConfig(n)))
+      if (
+        !outputConfig
+          .isDefinedAt(n) || !t.outputConfigType.isInstance(outputConfig(n))
+      )
         outputConfig(n) = t.makeCfgObject(x.face)
       t.doOutput(x.face, outputConfig(n).asInstanceOf[t.OCType])
     }

@@ -12,8 +12,14 @@ package net.bdew.lib.data
 import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotString(name: String, parent: DataSlotContainer, default: String = null) extends DataSlotVal[String] {
+case class DataSlotString(
+    name: String,
+    parent: DataSlotContainer,
+    default: String = null
+) extends DataSlotVal[String] {
   var value: String = default
-  def save(t: NBTTagCompound, kind: UpdateKind.Value) = if (value != null) t.setString(name, value)
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = if (t.hasKey(name)) t.getString(name) else null
+  def save(t: NBTTagCompound, kind: UpdateKind.Value) =
+    if (value != null) t.setString(name, value)
+  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value =
+    if (t.hasKey(name)) t.getString(name) else null
 }

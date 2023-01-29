@@ -13,6 +13,9 @@ import net.minecraft.item.ItemStack
 
 trait TooltipProvider {
   def shouldHandleTooltip(stack: ItemStack): Boolean
-  def handleTooltip(stack: ItemStack, advanced: Boolean, shift: Boolean): Iterable[String]
+  def handleTooltip(
+      stack: ItemStack,
+      advanced: Boolean,
+      shift: Boolean
+  ): Iterable[String]
 }
-

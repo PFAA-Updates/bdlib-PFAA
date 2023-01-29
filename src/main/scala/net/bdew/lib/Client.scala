@@ -13,9 +13,8 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.TextureMap
 import org.lwjgl.input.Keyboard
 
-/**
- * Misc functions and shortcuts for client-side code
- */
+/** Misc functions and shortcuts for client-side code
+  */
 object Client {
   def minecraft = Minecraft.getMinecraft
   def fontRenderer = Minecraft.getMinecraft.fontRenderer
@@ -24,8 +23,14 @@ object Client {
   def player = Minecraft.getMinecraft.thePlayer
   def textureManager = Minecraft.getMinecraft.getTextureManager
 
-  def blockMissingIcon = textureManager.getTexture(TextureMap.locationBlocksTexture).asInstanceOf[TextureMap].getAtlasSprite("missingno")
-  def itemMissingIcon = textureManager.getTexture(TextureMap.locationItemsTexture).asInstanceOf[TextureMap].getAtlasSprite("missingno")
+  def blockMissingIcon = textureManager
+    .getTexture(TextureMap.locationBlocksTexture)
+    .asInstanceOf[TextureMap]
+    .getAtlasSprite("missingno")
+  def itemMissingIcon = textureManager
+    .getTexture(TextureMap.locationItemsTexture)
+    .asInstanceOf[TextureMap]
+    .getAtlasSprite("missingno")
 
   def shiftDown: Boolean = {
     return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54)

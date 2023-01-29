@@ -19,7 +19,8 @@ object NBT {
   class NBTSerialized(val value: NBTBase) extends AnyVal
 
   object NBTSerialized {
-    implicit def serializeNbtPrimitive[T: Type](v: T): NBTSerialized = new NBTSerialized(Type[T].toNBT(v))
+    implicit def serializeNbtPrimitive[T: Type](v: T): NBTSerialized =
+      new NBTSerialized(Type[T].toNBT(v))
 
     implicit def serializeNbtList[T: Type](v: Traversable[T]): NBTSerialized = {
       val list = new NBTTagList
@@ -28,11 +29,15 @@ object NBT {
     }
 
     // Boolean is special because it's represented as a byte in NBT
-    implicit def serializeBoolean(v: Boolean): NBTSerialized = new NBTSerialized(new NBTTagByte(if (v) 1 else 0))
+    implicit def serializeBoolean(v: Boolean): NBTSerialized =
+      new NBTSerialized(new NBTTagByte(if (v) 1 else 0))
 
     // Itemstack serialization helpers
-    implicit def serializeItemStack(v: ItemStack): NBTSerialized = new NBTSerialized(NBT.from(v.writeToNBT _))
-    implicit def serializeItemStackList(v: Traversable[ItemStack]): NBTSerialized = serializeNbtList(v map (x => NBT.from(x.writeToNBT _)))
+    implicit def serializeItemStack(v: ItemStack): NBTSerialized =
+      new NBTSerialized(NBT.from(v.writeToNBT _))
+    implicit def serializeItemStackList(
+        v: Traversable[ItemStack]
+    ): NBTSerialized = serializeNbtList(v map (x => NBT.from(x.writeToNBT _)))
   }
 
   def apply(pairs: (String, NBTSerialized)*): NBTTagCompound = {

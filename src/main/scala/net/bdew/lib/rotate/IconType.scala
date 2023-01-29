@@ -16,7 +16,8 @@ object IconType extends Enumeration {
   val FRONT = Value(1, "FRONT")
   val SIDE = Value(2, "SIDE")
 
-  def fromSideAndDir(side: Int, facing: ForgeDirection) = this(metaSideMap(side)(facing.ordinal))
+  def fromSideAndDir(side: Int, facing: ForgeDirection) =
+    this(metaSideMap(side)(facing.ordinal))
 
   val metaSideMap = Array(
     Array(1, 0, 2, 2, 2, 2),
@@ -24,5 +25,6 @@ object IconType extends Enumeration {
     Array(2, 2, 1, 0, 2, 2),
     Array(2, 2, 0, 1, 2, 2),
     Array(2, 2, 2, 2, 1, 0),
-    Array(2, 2, 2, 2, 0, 1))
+    Array(2, 2, 2, 2, 0, 1)
+  )
 }

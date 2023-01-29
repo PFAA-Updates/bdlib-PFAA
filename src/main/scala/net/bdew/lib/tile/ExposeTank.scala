@@ -22,21 +22,33 @@ trait ExposeTank extends TileEntity with IFluidHandler {
     return tank.fill(resource, doFill)
   }
 
-  def drain(from: ForgeDirection, resource: FluidStack, doDrain: Boolean): FluidStack = {
+  def drain(
+      from: ForgeDirection,
+      resource: FluidStack,
+      doDrain: Boolean
+  ): FluidStack = {
     val tank = getTankFromDirection(from)
-    if (tank == null || resource == null || !resource.isFluidEqual(tank.getFluid)) return null
+    if (
+      tank == null || resource == null || !resource.isFluidEqual(tank.getFluid)
+    ) return null
     return tank.drain(resource.amount, doDrain)
   }
 
-  def drain(from: ForgeDirection, maxDrain: Int, doDrain: Boolean): FluidStack = {
+  def drain(
+      from: ForgeDirection,
+      maxDrain: Int,
+      doDrain: Boolean
+  ): FluidStack = {
     val tank = getTankFromDirection(from)
     if (tank == null) return null
     getTankFromDirection(from).drain(maxDrain, doDrain)
   }
 
-  def canFill(from: ForgeDirection, fluid: Fluid): Boolean = getTankFromDirection(from) != null
+  def canFill(from: ForgeDirection, fluid: Fluid): Boolean =
+    getTankFromDirection(from) != null
 
-  def canDrain(from: ForgeDirection, fluid: Fluid): Boolean = getTankFromDirection(from) != null
+  def canDrain(from: ForgeDirection, fluid: Fluid): Boolean =
+    getTankFromDirection(from) != null
 
   def getTankInfo(from: ForgeDirection): Array[FluidTankInfo] = {
     val tank = getTankFromDirection(from)

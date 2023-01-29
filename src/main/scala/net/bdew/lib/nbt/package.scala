@@ -14,5 +14,6 @@ import net.minecraft.nbt.NBTTagCompound
 import scala.language.implicitConversions
 
 package object nbt {
-  implicit def compound2rich(p: NBTTagCompound): RichNBTTagCompound = new RichNBTTagCompound(p)
+  implicit def compound2rich(p: NBTTagCompound): RichNBTTagCompound =
+    new RichNBTTagCompound(p)
 }

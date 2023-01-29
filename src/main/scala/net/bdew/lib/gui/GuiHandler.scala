@@ -20,13 +20,30 @@ class GuiHandler extends IGuiHandler {
 
   def register(p: GuiProvider) = {
     if (GUIs.isDefinedAt(p.guiId))
-      sys.error("GUI ID Collision - %d was registered for %s and attempted to register by %s".format(p.guiId, GUIs(p.guiId), p))
+      sys.error(
+        "GUI ID Collision - %d was registered for %s and attempted to register by %s"
+          .format(p.guiId, GUIs(p.guiId), p)
+      )
     GUIs += (p.guiId -> p)
   }
 
-  def getServerGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): AnyRef =
+  def getServerGuiElement(
+      ID: Int,
+      player: EntityPlayer,
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int
+  ): AnyRef =
     GUIs(ID).getContainer(world.getTileEntity(x, y, z), player)
 
-  def getClientGuiElement(ID: Int, player: EntityPlayer, world: World, x: Int, y: Int, z: Int): AnyRef =
+  def getClientGuiElement(
+      ID: Int,
+      player: EntityPlayer,
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int
+  ): AnyRef =
     GUIs(ID).getGui(world.getTileEntity(x, y, z), player)
 }

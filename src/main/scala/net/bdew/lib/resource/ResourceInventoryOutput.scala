@@ -21,13 +21,14 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
   def getResource =
     res.resource match {
       case Some(Resource(kind: ItemResource, amount)) => Some((kind, amount))
-      case _ => None
+      case _                                          => None
     }
 
   override def getStackInSlot(slot: Int) =
     if (slot == 0) {
       (getResource map { case (kind, amount) =>
-        val amt = Misc.clamp(amount.floor.toInt, 0, kind.makeStack(1).getMaxStackSize)
+        val amt =
+          Misc.clamp(amount.floor.toInt, 0, kind.makeStack(1).getMaxStackSize)
         if (amt > 0)
           kind.makeStack(amt)
         else
@@ -43,7 +44,11 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
         (kind, stored) <- getResource
         drained <- res.rawDrain(amt, true, false)
       } yield {
-        val stackSize = Misc.clamp(drained.amount.floor.toInt, 0, kind.makeStack(1).getMaxStackSize)
+        val stackSize = Misc.clamp(
+          drained.amount.floor.toInt,
+          0,
+          kind.makeStack(1).getMaxStackSize
+        )
         if (stackSize > 0) {
           res.rawDrain(stackSize, true, true)
           kind.makeStack(stackSize)
@@ -58,7 +63,10 @@ case class ResourceInventoryOutput(res: DataSlotResource) extends IInventory {
         decrStackSize(0, Int.MaxValue)
       } else {
         val stackRes = Resource.from(stack)
-        for ((kind, stored) <- getResource if kind == stackRes.kind && stackRes.amount < stored) {
+        for (
+          (kind, stored) <- getResource
+          if kind == stackRes.kind && stackRes.amount < stored
+        ) {
           res.rawDrain(stored - stackRes.amount, true, true)
         }
       }

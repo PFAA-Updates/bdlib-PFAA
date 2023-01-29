@@ -23,11 +23,18 @@ case class EntryNumList(v: List[Double]) extends ConfigEntry
 
 case class EntryStrList(v: List[String]) extends ConfigEntry
 
-case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(String, ConfigEntry)] {
-  var raw = Map.empty[String, ConfigEntry].withDefault(x => sys.error("Config value '%s%s' is missing".format(pfx, x)))
+case class ConfigSection(pfx: String = "")
+    extends ConfigEntry
+    with Iterable[(String, ConfigEntry)] {
+  var raw = Map
+    .empty[String, ConfigEntry]
+    .withDefault(x =>
+      sys.error("Config value '%s%s' is missing".format(pfx, x))
+    )
 
   def iterator: Iterator[(String, ConfigEntry)] = raw.iterator
-  def filterType[T <: ConfigEntry](cls: Class[T]): Iterable[(String, T)] = raw.filter(x => cls.isInstance(x._2)).map(x => x.asInstanceOf[(String, T)])
+  def filterType[T <: ConfigEntry](cls: Class[T]): Iterable[(String, T)] =
+    raw.filter(x => cls.isInstance(x._2)).map(x => x.asInstanceOf[(String, T)])
 
   def keys = raw.keys
 
@@ -36,7 +43,14 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
     if (t.isInstance(v))
       return v.asInstanceOf[T]
     else
-      sys.error("Config value '%s%s' is of the wrong type, expected %s, got %s".format(pfx, id, t.getName, v.getClass.getName))
+      sys.error(
+        "Config value '%s%s' is of the wrong type, expected %s, got %s".format(
+          pfx,
+          id,
+          t.getName,
+          v.getClass.getName
+        )
+      )
   }
 
   def set(id: String, v: ConfigEntry) = raw += id -> v
@@ -48,7 +62,8 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
   def getSection(id: String) = getRaw(id, classOf[ConfigSection])
 
   final val trueVals = Set("y", "true", "yes", "on")
-  def getBoolean(id: String) = trueVals.contains(getString(id).toLowerCase(Locale.US))
+  def getBoolean(id: String) =
+    trueVals.contains(getString(id).toLowerCase(Locale.US))
 
   def hasValue(id: String) = raw.isDefinedAt(id)
 
@@ -70,9 +85,8 @@ case class ConfigSection(pfx: String = "") extends ConfigEntry with Iterable[(St
   def getColor(id: String) =
     raw(id) match {
       case EntryDouble(c) => Color.fromInt(c.toInt)
-      case EntryNumList(r :: g :: b :: Nil) => Color(r.toFloat, g.toFloat, b.toFloat)
+      case EntryNumList(r :: g :: b :: Nil) =>
+        Color(r.toFloat, g.toFloat, b.toFloat)
       case x => sys.error("Invalid color definition: %s".format(x))
     }
 }
-
-

@@ -26,16 +26,20 @@ abstract class Machine[T <: Block](val name: String, blockConstruct: => T) {
   def regBlock(creativeTab: CreativeTabs) {
     block = blockConstruct
 
-    val itemClass: Class[_ <: ItemBlock] = if (block.isInstanceOf[HasItemBlock])
-      block.asInstanceOf[HasItemBlock].ItemBlockClass
-    else
-      classOf[ItemBlock]
+    val itemClass: Class[_ <: ItemBlock] =
+      if (block.isInstanceOf[HasItemBlock])
+        block.asInstanceOf[HasItemBlock].ItemBlockClass
+      else
+        classOf[ItemBlock]
 
     GameRegistry.registerBlock(block, itemClass, name)
 
     block.setCreativeTab(creativeTab)
     if (block.isInstanceOf[HasTE[_]]) {
-      GameRegistry.registerTileEntity(block.asInstanceOf[HasTE[_]].TEClass, "%s.%s".format(modId, name))
+      GameRegistry.registerTileEntity(
+        block.asInstanceOf[HasTE[_]].TEClass,
+        "%s.%s".format(modId, name)
+      )
     }
 
   }

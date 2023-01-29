@@ -10,7 +10,11 @@
 package net.bdew.lib.tooltip
 
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fluids.{FluidContainerRegistry, FluidStack, IFluidContainerItem}
+import net.minecraftforge.fluids.{
+  FluidContainerRegistry,
+  FluidStack,
+  IFluidContainerItem
+}
 
 trait FluidTooltipProvider extends TooltipProvider {
   def getFluid(is: ItemStack): Option[FluidStack] = {
@@ -21,10 +25,21 @@ trait FluidTooltipProvider extends TooltipProvider {
     }
   }
 
-  override def shouldHandleTooltip(stack: ItemStack): Boolean = getFluid(stack) exists shouldHandleTooltip
-  override def handleTooltip(stack: ItemStack, advanced: Boolean, shift: Boolean): Iterable[String] =
-    getFluid(stack) map (f => handleTooltip(f, advanced, shift)) getOrElse Iterable.empty
+  override def shouldHandleTooltip(stack: ItemStack): Boolean =
+    getFluid(stack) exists shouldHandleTooltip
+  override def handleTooltip(
+      stack: ItemStack,
+      advanced: Boolean,
+      shift: Boolean
+  ): Iterable[String] =
+    getFluid(stack) map (f =>
+      handleTooltip(f, advanced, shift)
+    ) getOrElse Iterable.empty
 
   def shouldHandleTooltip(fluid: FluidStack): Boolean
-  def handleTooltip(fluid: FluidStack, advanced: Boolean, shift: Boolean): Iterable[String]
+  def handleTooltip(
+      fluid: FluidStack,
+      advanced: Boolean,
+      shift: Boolean
+  ): Iterable[String]
 }

@@ -43,10 +43,19 @@ class TileExtended extends TileEntity {
     if (!sendClientUpdate.hasListeners) return null
     val tag = new NBTTagCompound
     sendClientUpdate.trigger(tag)
-    return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, ACT_CLIENT, tag)
+    return new S35PacketUpdateTileEntity(
+      this.xCoord,
+      this.yCoord,
+      this.zCoord,
+      ACT_CLIENT,
+      tag
+    )
   }
 
-  override final def onDataPacket(net: NetworkManager, pkt: S35PacketUpdateTileEntity) {
+  override final def onDataPacket(
+      net: NetworkManager,
+      pkt: S35PacketUpdateTileEntity
+  ) {
     if (pkt.func_148853_f == ACT_CLIENT)
       handleClientUpdate.trigger(pkt.func_148857_g)
     else

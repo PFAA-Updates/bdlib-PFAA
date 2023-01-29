@@ -19,24 +19,26 @@ import net.minecraftforge.common.util.ForgeDirection
 
 trait TileCoverable extends TileDataSlots {
   val covers = (ForgeDirection.VALID_DIRECTIONS map { x =>
-    x -> DataSlotItemStack("cover_" + x.toString.toLowerCase(Locale.US), this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
+    x -> DataSlotItemStack("cover_" + x.toString.toLowerCase(Locale.US), this)
+      .setUpdate(UpdateKind.SAVE, UpdateKind.WORLD, UpdateKind.RENDER)
   }).toMap
 
-  /**
-   * Checks if a specific cover can be installed here
-   */
+  /** Checks if a specific cover can be installed here
+    */
   def isValidCover(side: ForgeDirection, cover: ItemStack): Boolean
 
-  /**
-   * Called when new covers are installed
-   */
+  /** Called when new covers are installed
+    */
   def onCoversChanged() {}
 
   def tickCovers() =
     for {
       (dir, coverSlot) <- covers
       coverStack <- Option(coverSlot.value)
-      coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(_, classOf[ItemCover]))
+      coverItem <- Option(coverStack.getItem) flatMap (Misc.asInstanceOpt(
+        _,
+        classOf[ItemCover]
+      ))
     } {
       coverItem.tickCover(this, dir, coverStack)
     }

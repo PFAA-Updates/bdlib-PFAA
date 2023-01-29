@@ -17,17 +17,23 @@ import net.minecraft.nbt.NBTTagCompound
 case class ItemResource(item: Item, meta: Int) extends ResourceKind {
   override def getTexture = new IconWrapper(
     if (item.getSpriteNumber == 0) Texture.BLOCKS else Texture.ITEMS,
-    item.getIconFromDamageForRenderPass(meta, 0))
+    item.getIconFromDamageForRenderPass(meta, 0)
+  )
 
-  override def getColor = Color.fromInt(item.getColorFromItemStack(makeStack(1), 0))
+  override def getColor =
+    Color.fromInt(item.getColorFromItemStack(makeStack(1), 0))
 
   override def getLocalizedName = item.getItemStackDisplayName(makeStack(1))
   override def getUnlocalizedName = item.getUnlocalizedName(makeStack(1))
 
   override def getFormattedString(amount: Double, capacity: Double) =
-    Misc.toLocalF("resource.item.format", DecFormat.dec2(amount), DecFormat.round(capacity))
+    Misc.toLocalF(
+      "resource.item.format",
+      DecFormat.dec2(amount),
+      DecFormat.round(capacity)
+    )
 
-  override def capacityMultiplier = 1 / 250D
+  override def capacityMultiplier = 1 / 250d
 
   def makeStack(n: Int) = new ItemStack(item, n, meta)
 
@@ -46,4 +52,3 @@ object ItemResourceHelper extends ResourceHelper[ItemResource]("item") {
     tag.setInteger("meta", r.meta)
   }
 }
-

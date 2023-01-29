@@ -24,13 +24,18 @@ object Tools {
   def findConnections(world: World, start: BlockRef, kind: String) =
     (start.neighbours.values flatMap { case pos =>
       (pos.tile(world) flatMap {
-        case t: TileModule => t.connected.value
+        case t: TileModule     => t.connected.value
         case t: TileController => Some(pos)
-        case _ => None
+        case _                 => None
       }) filter (x => canConnect(world, x, kind))
     }).toList.distinct
 
-  def getConnectedNeighbours(w: World, core: BlockRef, pos: BlockRef, seen: mutable.Set[BlockRef]) =
+  def getConnectedNeighbours(
+      w: World,
+      core: BlockRef,
+      pos: BlockRef,
+      seen: mutable.Set[BlockRef]
+  ) =
     pos.neighbours.values
       .filterNot(seen.contains)
       .flatMap(_.getTile[TileModule](w))

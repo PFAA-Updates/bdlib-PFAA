@@ -14,9 +14,16 @@ import net.minecraftforge.fluids.{Fluid, FluidStack, FluidTankInfo}
 
 trait CIFluidOutputSelect extends CIOutputFaces {
   val outputSlotsDef: SlotSet
-  def outputFluid(slot: outputSlotsDef.Slot, resource: FluidStack, doDrain: Boolean): FluidStack
-  def outputFluid(slot: outputSlotsDef.Slot, amount: Int, doDrain: Boolean): FluidStack
+  def outputFluid(
+      slot: outputSlotsDef.Slot,
+      resource: FluidStack,
+      doDrain: Boolean
+  ): FluidStack
+  def outputFluid(
+      slot: outputSlotsDef.Slot,
+      amount: Int,
+      doDrain: Boolean
+  ): FluidStack
   def canOutputFluid(slot: outputSlotsDef.Slot, fluid: Fluid): Boolean
   def getTankInfo: Array[FluidTankInfo]
 }
-

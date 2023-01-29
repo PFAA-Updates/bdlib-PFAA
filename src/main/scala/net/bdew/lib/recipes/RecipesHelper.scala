@@ -15,19 +15,35 @@ import cpw.mods.fml.common.FMLCommonHandler
 import net.bdew.lib.{BdLib, Misc}
 
 object RecipesHelper {
-  /**
-   * Perform full loading of a set of config
-   * @param modName Name of the mod, used in logging and errors
-   * @param listResource Resource Name of the internal config list file
-   * @param configDir Base path to user config giles
-   * @param resBaseName Base resource name for internal config files
-   * @param loader Loader instance
-   */
-  def loadConfigs(modName: String, listResource: String, configDir: File, resBaseName: String, loader: RecipeLoader) {
+
+  /** Perform full loading of a set of config
+    * @param modName
+    *   Name of the mod, used in logging and errors
+    * @param listResource
+    *   Resource Name of the internal config list file
+    * @param configDir
+    *   Base path to user config giles
+    * @param resBaseName
+    *   Base resource name for internal config files
+    * @param loader
+    *   Loader instance
+    */
+  def loadConfigs(
+      modName: String,
+      listResource: String,
+      configDir: File,
+      resBaseName: String,
+      loader: RecipeLoader
+  ) {
     BdLib.logInfo("Loading internal config files for mod %s", modName)
 
-    val internals = Misc.withAutoClose(new BufferedReader(new InputStreamReader(getClass.getResourceAsStream(listResource)))) { listReader =>
-      Iterator.continually(listReader.readLine)
+    val internals = Misc.withAutoClose(
+      new BufferedReader(
+        new InputStreamReader(getClass.getResourceAsStream(listResource))
+      )
+    ) { listReader =>
+      Iterator
+        .continually(listReader.readLine)
         .takeWhile(_ != null)
         .map(_.trim)
         .filterNot(_.startsWith("#"))
@@ -41,11 +57,21 @@ object RecipesHelper {
     for (fileName <- internals) {
       val overrideFile = new File(overrideDir, fileName)
       if (overrideFile.exists()) {
-        tryLoadConfig(new FileReader(overrideFile), overrideFile.getCanonicalPath, modName, loader)
+        tryLoadConfig(
+          new FileReader(overrideFile),
+          overrideFile.getCanonicalPath,
+          modName,
+          loader
+        )
       } else {
         val url = getClass.getResource(resBaseName + fileName)
         Misc.withAutoClose(url.openStream()) { stream =>
-          tryLoadConfig(new InputStreamReader(stream), url.toString, modName, loader)
+          tryLoadConfig(
+            new InputStreamReader(stream),
+            url.toString,
+            modName,
+            loader
+          )
         }
       }
     }
@@ -55,19 +81,36 @@ object RecipesHelper {
     for (fileName <- configDir.list().sorted if fileName.endsWith(".cfg")) {
       val file = new File(configDir, fileName)
       if (file.canRead)
-        tryLoadConfig(new FileReader(file), file.getCanonicalPath, modName, loader)
+        tryLoadConfig(
+          new FileReader(file),
+          file.getCanonicalPath,
+          modName,
+          loader
+        )
     }
 
     BdLib.logInfo("Config loading for mod %s finished", modName)
   }
 
-  def tryLoadConfig(reader: Reader, path: String, modName: String, loader: RecipeLoader) {
+  def tryLoadConfig(
+      reader: Reader,
+      path: String,
+      modName: String,
+      loader: RecipeLoader
+  ) {
     BdLib.logInfo("Loading config: %s", path)
     try {
       loader.load(reader)
     } catch {
       case e: Throwable =>
-        FMLCommonHandler.instance().raiseException(e, "%s config loading failed in file %s: %s".format(modName, path, e.getMessage), true)
+        FMLCommonHandler
+          .instance()
+          .raiseException(
+            e,
+            "%s config loading failed in file %s: %s"
+              .format(modName, path, e.getMessage),
+            true
+          )
     } finally {
       reader.close()
     }

@@ -13,13 +13,18 @@ import net.bdew.lib.Misc
 import net.bdew.lib.data.base.DataSlotNumeric
 import net.minecraftforge.fluids.{Fluid, FluidStack, FluidTankInfo, IFluidTank}
 
-case class TankEmulator[T: Numeric](fluid: Fluid, ds: DataSlotNumeric[T], capacity: Int) extends IFluidTank {
+case class TankEmulator[T: Numeric](
+    fluid: Fluid,
+    ds: DataSlotNumeric[T],
+    capacity: Int
+) extends IFluidTank {
   val num = implicitly[Numeric[T]]
 
   override def getFluidAmount: Int = num.toDouble(ds).floor.toInt
   override def getCapacity: Int = capacity
 
-  override def getFluid: FluidStack = if (getFluidAmount > 0) new FluidStack(fluid, getFluidAmount) else null
+  override def getFluid: FluidStack =
+    if (getFluidAmount > 0) new FluidStack(fluid, getFluidAmount) else null
 
   override def getInfo: FluidTankInfo = new FluidTankInfo(this)
 

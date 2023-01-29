@@ -19,8 +19,20 @@ trait DrawTarget {
   def drawText(text: String, p: Point, color: Color, shadow: Boolean)
   def drawTextMultiline(text: String, r: Rect, color: Color)
 
-  def drawTextureInterpolate(r: Rect, t: Texture, x1: Float, y1: Float, x2: Float, y2: Float, color: Color = Color.white) =
-    drawTexture(r.interpolate(x1, y1, x2, y2), Texture.interpolate(t, x1, y1, x2, y2), color)
+  def drawTextureInterpolate(
+      r: Rect,
+      t: Texture,
+      x1: Float,
+      y1: Float,
+      x2: Float,
+      y2: Float,
+      color: Color = Color.white
+  ) =
+    drawTexture(
+      r.interpolate(x1, y1, x2, y2),
+      Texture.interpolate(t, x1, y1, x2, y2),
+      color
+    )
 }
 
 trait SimpleDrawTarget extends DrawTarget {
@@ -42,5 +54,11 @@ trait SimpleDrawTarget extends DrawTarget {
     getFontRenderer.drawString(text, p.x.round, p.y.round, color.asARGB, shadow)
 
   def drawTextMultiline(text: String, r: Rect, color: Color) =
-    getFontRenderer.drawSplitString(text, r.x.round, r.y.round, r.w.round, color.asARGB)
+    getFontRenderer.drawSplitString(
+      text,
+      r.x.round,
+      r.y.round,
+      r.w.round,
+      color.asARGB
+    )
 }

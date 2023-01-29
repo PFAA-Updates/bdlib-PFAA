@@ -21,7 +21,14 @@ trait TileDataSlots extends TileExtended with DataSlotContainer {
   handleClientUpdate.listen { tag =>
     doLoad(UpdateKind.WORLD, tag)
     if (dataSlots.values.exists(_.updateKind.contains(UpdateKind.RENDER)))
-      getWorldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord)
+      getWorldObj.markBlockRangeForRenderUpdate(
+        xCoord,
+        yCoord,
+        zCoord,
+        xCoord,
+        yCoord,
+        zCoord
+      )
   }
 
   override def getWorldObject = getWorldObj

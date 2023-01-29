@@ -16,7 +16,8 @@ import net.minecraft.nbt.NBTTagCompound
 
 import scala.collection.mutable
 
-case class DataSlotPosSet(name: String, parent: DataSlotContainer) extends DataSlot {
+case class DataSlotPosSet(name: String, parent: DataSlotContainer)
+    extends DataSlot {
   val set = collection.mutable.Set.empty[BlockRef]
 
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
@@ -24,7 +25,10 @@ case class DataSlotPosSet(name: String, parent: DataSlotContainer) extends DataS
   import net.bdew.lib.nbt._
 
   def save(t: NBTTagCompound, kind: UpdateKind.Value) {
-    t.setList(name, set.map(x => Misc.applyMutator(x.writeToNBT, new NBTTagCompound)))
+    t.setList(
+      name,
+      set.map(x => Misc.applyMutator(x.writeToNBT, new NBTTagCompound))
+    )
   }
 
   def load(t: NBTTagCompound, kind: UpdateKind.Value) {
@@ -39,5 +43,6 @@ object DataSlotPosSet {
 
   import scala.language.implicitConversions
 
-  implicit def dataSlotPosSet2set(v: DataSlotPosSet): mutable.Set[BlockRef] = v.set
+  implicit def dataSlotPosSet2set(v: DataSlotPosSet): mutable.Set[BlockRef] =
+    v.set
 }

@@ -17,7 +17,8 @@ trait SidedInventory extends BaseInventory with ISidedInventory {
 
   def getAccessibleSlotsFromSide(side: Int): Array[Int] = inv.indices.toArray
 
-  def canInsertItem(slot: Int, stack: ItemStack, side: Int) = allowSided && isItemValidForSlot(slot, stack)
+  def canInsertItem(slot: Int, stack: ItemStack, side: Int) =
+    allowSided && isItemValidForSlot(slot, stack)
 
   def canExtractItem(slot: Int, stack: ItemStack, side: Int) = allowSided
 }

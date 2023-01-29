@@ -15,9 +15,16 @@ import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.util.ForgeDirection
 
 case class FaceOverlay(icon: IIcon, color: Color) {
-  def this(icon: IIcon, color: (Float, Float, Float)) = this(icon, new Color(color._1, color._2, color._3))
+  def this(icon: IIcon, color: (Float, Float, Float)) =
+    this(icon, new Color(color._1, color._2, color._3))
 }
 
 trait BlockAdditionalRender {
-  def getFaceOverlays(world: IBlockAccess, x: Int, y: Int, z: Int, face: ForgeDirection): List[FaceOverlay]
+  def getFaceOverlays(
+      world: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      face: ForgeDirection
+  ): List[FaceOverlay]
 }

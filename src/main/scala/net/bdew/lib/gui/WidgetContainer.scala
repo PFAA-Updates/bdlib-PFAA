@@ -78,7 +78,9 @@ trait WidgetContainer extends DrawTarget {
   def getOffsetFromWindow: Point
 }
 
-class WidgetContainerWindow(val parent: BaseScreen, xSz: Int, ySz: Int) extends WidgetContainer with SimpleDrawTarget {
+class WidgetContainerWindow(val parent: BaseScreen, xSz: Int, ySz: Int)
+    extends WidgetContainer
+    with SimpleDrawTarget {
   def getZLevel = parent.getZLevel
   def getFontRenderer = parent.getFontRenderer
   def getOffsetFromWindow = Point(0, 0)

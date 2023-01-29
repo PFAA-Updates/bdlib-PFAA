@@ -11,7 +11,8 @@ package net.bdew.lib.multiblock.data
 
 import net.bdew.lib.multiblock.network.MsgOutputCfg
 
-case class MsgOutputCfgRSMode(output: Int, rsMode: RSMode.Value) extends MsgOutputCfg
+case class MsgOutputCfgRSMode(output: Int, rsMode: RSMode.Value)
+    extends MsgOutputCfg
 
 trait OutputConfigRSControllable extends OutputConfig {
   var rsMode: RSMode.Value

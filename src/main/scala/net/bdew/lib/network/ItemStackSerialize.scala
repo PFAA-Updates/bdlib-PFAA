@@ -40,6 +40,6 @@ object ItemStackSerialize {
   import scala.language.implicitConversions
 
   implicit def ser2content(v: ItemStackSerialize): ItemStack = v.stack
-  implicit def content2ser(v: ItemStack): ItemStackSerialize = new ItemStackSerialize(v)
+  implicit def content2ser(v: ItemStack): ItemStackSerialize =
+    new ItemStackSerialize(v)
 }
-

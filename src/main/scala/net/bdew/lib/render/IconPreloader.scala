@@ -17,14 +17,17 @@ import net.minecraft.util.IIcon
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
 
-/**
- * Allows loading of texture that don't belong to specific block or item into vanilla block/item atlas
- * @param kind 0=Blocks / 1=Items
- */
+/** Allows loading of texture that don't belong to specific block or item into
+  * vanilla block/item atlas
+  * @param kind
+  *   0=Blocks / 1=Items
+  */
 class IconPreloader(kind: Int) {
   lazy val map = {
     (for {
-      method <- getClass.getMethods if method.getParameterTypes.isEmpty && classOf[TextureLoc].isAssignableFrom(method.getReturnType)
+      method <- getClass.getMethods
+      if method.getParameterTypes.isEmpty && classOf[TextureLoc]
+        .isAssignableFrom(method.getReturnType)
       value <- Misc.asInstanceOpt(method.invoke(this), classOf[TextureLoc])
     } yield method.getName -> value).toMap
   }

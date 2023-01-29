@@ -18,9 +18,11 @@ import scala.reflect.ClassTag
 
 trait TileModule extends TileDataSlots {
   val kind: String
-  val connected = new DataSlotPos("connected", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE, UpdateKind.RENDER)
+  val connected = new DataSlotPos("connected", this)
+    .setUpdate(UpdateKind.WORLD, UpdateKind.SAVE, UpdateKind.RENDER)
 
-  def getCoreAs[T <: TileController : ClassTag] = connected flatMap (_.getTile[T](getWorldObj))
+  def getCoreAs[T <: TileController: ClassTag] =
+    connected flatMap (_.getTile[T](getWorldObj))
 
   def getCore = getCoreAs[TileController]
 
@@ -30,14 +32,24 @@ trait TileModule extends TileDataSlots {
     if (target.moduleConnected(this)) {
       connected.set(target.myPos)
       getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
-      getWorldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType)
+      getWorldObj.notifyBlocksOfNeighborChange(
+        xCoord,
+        yCoord,
+        zCoord,
+        getBlockType
+      )
     }
   }
 
   def coreRemoved() {
     connected.unset()
     getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
-    getWorldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType)
+    getWorldObj.notifyBlocksOfNeighborChange(
+      xCoord,
+      yCoord,
+      zCoord,
+      getBlockType
+    )
   }
 
   def onBreak() {
@@ -49,7 +61,8 @@ trait TileModule extends TileDataSlots {
   def tryConnect() {
     if (getCore.isEmpty) {
       for {
-        conn <- Tools.findConnections(getWorldObj, myPos, kind).headOption if canConnectToCore(conn)
+        conn <- Tools.findConnections(getWorldObj, myPos, kind).headOption
+        if canConnectToCore(conn)
         core <- conn.getTile[TileController](getWorldObj)
       } {
         connect(core)

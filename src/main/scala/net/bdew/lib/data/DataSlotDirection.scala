@@ -13,8 +13,11 @@ import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.ForgeDirection
 
-case class DataSlotDirection(name: String, parent: DataSlotContainer) extends DataSlotVal[ForgeDirection] {
+case class DataSlotDirection(name: String, parent: DataSlotContainer)
+    extends DataSlotVal[ForgeDirection] {
   var value = ForgeDirection.UP
-  def save(t: NBTTagCompound, kind: UpdateKind.Value) = t.setByte(name, value.ordinal().toByte)
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = ForgeDirection.getOrientation(t.getByte(name))
+  def save(t: NBTTagCompound, kind: UpdateKind.Value) =
+    t.setByte(name, value.ordinal().toByte)
+  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value =
+    ForgeDirection.getOrientation(t.getByte(name))
 }

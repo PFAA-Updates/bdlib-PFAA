@@ -14,44 +14,63 @@ import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids.{FluidStack, FluidTankInfo}
 
-class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapacity: Int) extends DataSlot {
+class DataSlotResource(
+    val name: String,
+    val parent: DataSlotContainer,
+    initCapacity: Int
+) extends DataSlot {
   var resource: Option[Resource] = None
   var capacity = initCapacity
   val sendCapacityOnUpdateKind = Set(UpdateKind.GUI)
 
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
-  def getEffectiveCapacity = resource.map(_.kind.capacityMultiplier).getOrElse(0D) * capacity
+  def getEffectiveCapacity =
+    resource.map(_.kind.capacityMultiplier).getOrElse(0d) * capacity
 
-  /**
-   * Low level fill method that operates on Resource's
-   * @param res Resource to fill
-   * @param onlyRound Only fill integer amounts
-   * @param doFill If false, fill will only be simulated
-   * @return how much was or would be filled
-   */
+  /** Low level fill method that operates on Resource's
+    * @param res
+    *   Resource to fill
+    * @param onlyRound
+    *   Only fill integer amounts
+    * @param doFill
+    *   If false, fill will only be simulated
+    * @return
+    *   how much was or would be filled
+    */
   def rawFill(res: Resource, onlyRound: Boolean, doFill: Boolean) = {
     if (resource.isEmpty || resource.get.kind == res.kind) {
-      val current = if (resource.isEmpty) 0D else resource.get.amount
-      var canFill = Misc.clamp(res.amount, 0D, capacity * res.kind.capacityMultiplier - current)
+      val current = if (resource.isEmpty) 0d else resource.get.amount
+      var canFill = Misc.clamp(
+        res.amount,
+        0d,
+        capacity * res.kind.capacityMultiplier - current
+      )
       if (onlyRound) canFill = canFill.floor
       if (doFill && canFill > 0) execWithChangeNotify {
         resource = Some(Resource(res.kind, current + canFill))
       }
       canFill
-    } else 0D
+    } else 0d
   }
 
-  /**
-   * Low level drain method that operates on Resource's
-   * @param maxDrain maximum amount to drain
-   * @param onlyRound Only fill integer amounts
-   * @param doDrain If false, drain will only be simulated
-   * @return how much was or would be drained
-   */
-  def rawDrain(maxDrain: Double, onlyRound: Boolean, doDrain: Boolean): Option[Resource] = {
+  /** Low level drain method that operates on Resource's
+    * @param maxDrain
+    *   maximum amount to drain
+    * @param onlyRound
+    *   Only fill integer amounts
+    * @param doDrain
+    *   If false, drain will only be simulated
+    * @return
+    *   how much was or would be drained
+    */
+  def rawDrain(
+      maxDrain: Double,
+      onlyRound: Boolean,
+      doDrain: Boolean
+  ): Option[Resource] = {
     resource map { res =>
-      var canDrain = Misc.clamp(res.amount, 0D, maxDrain)
+      var canDrain = Misc.clamp(res.amount, 0d, maxDrain)
       if (onlyRound) canDrain = canDrain.floor
       if (doDrain && canDrain > 0) execWithChangeNotify {
         resource =
@@ -64,7 +83,8 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
     }
   }
 
-  def fillFluid(resource: FluidStack, doFill: Boolean): Int = rawFill(Resource.from(resource), onlyRound = true, doFill).toInt
+  def fillFluid(resource: FluidStack, doFill: Boolean): Int =
+    rawFill(Resource.from(resource), onlyRound = true, doFill).toInt
   def drainFluid(maxDrain: Int, doDrain: Boolean): FluidStack = {
     (for {
       res <- rawDrain(maxDrain, true, false)
@@ -80,18 +100,21 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
       res <- resource
       rKind <- Misc.asInstanceOpt(res.kind, classOf[FluidResource])
     } yield {
-      new FluidTankInfo(new FluidStack(rKind.fluid, res.amount.toInt), getEffectiveCapacity.toInt)
+      new FluidTankInfo(
+        new FluidStack(rKind.fluid, res.amount.toInt),
+        getEffectiveCapacity.toInt
+      )
     }).getOrElse(new FluidTankInfo(null, capacity))
   }
 
   override def load(t: NBTTagCompound, kind: UpdateKind.Value) {
     val tag = t.getCompoundTag(name)
 
-    resource = if (tag.hasKey("resource"))
-      ResourceManager.loadFromNBT(tag.getCompoundTag("resource"))
-    else
-      None
-
+    resource =
+      if (tag.hasKey("resource"))
+        ResourceManager.loadFromNBT(tag.getCompoundTag("resource"))
+      else
+        None
 
     if (sendCapacityOnUpdateKind.contains(kind))
       tag.getInteger("capacity")
@@ -100,7 +123,9 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {
     val tag = new NBTTagCompound()
 
-    resource foreach { res => tag.setTag("resource", ResourceManager.saveToNBT(res)) }
+    resource foreach { res =>
+      tag.setTag("resource", ResourceManager.saveToNBT(res))
+    }
 
     if (sendCapacityOnUpdateKind.contains(kind))
       tag.setInteger("capacity", capacity)
@@ -108,4 +133,3 @@ class DataSlotResource(val name: String, val parent: DataSlotContainer, initCapa
     t.setTag(name, tag)
   }
 }
-

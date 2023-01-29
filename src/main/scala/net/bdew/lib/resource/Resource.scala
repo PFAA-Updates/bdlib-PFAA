@@ -33,7 +33,8 @@ abstract class ResourceHelper[T <: ResourceKind](val id: String) {
 
 object ResourceManager {
   var resourceHelpers = Map.empty[String, ResourceHelper[_ <: ResourceKind]]
-  def register[T <: ResourceKind](helper: ResourceHelper[T]) = resourceHelpers += helper.id -> helper
+  def register[T <: ResourceKind](helper: ResourceHelper[T]) =
+    resourceHelpers += helper.id -> helper
 
   register(FluidResourceHelper)
   register(ItemResourceHelper)
@@ -58,5 +59,6 @@ case class Resource(kind: ResourceKind, amount: Double)
 
 object Resource {
   def from(fs: FluidStack) = Resource(FluidResource(fs.getFluid), fs.amount)
-  def from(is: ItemStack) = Resource(ItemResource(is.getItem, is.getItemDamage), is.stackSize)
+  def from(is: ItemStack) =
+    Resource(ItemResource(is.getItem, is.getItemDamage), is.stackSize)
 }

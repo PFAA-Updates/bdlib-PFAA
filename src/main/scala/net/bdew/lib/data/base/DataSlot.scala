@@ -11,20 +11,18 @@ package net.bdew.lib.data.base
 
 import net.minecraft.nbt.NBTTagCompound
 
-/**
- * Base trait for all data slots
- */
+/** Base trait for all data slots
+  */
 trait DataSlot {
-  /**
-   * Tile Entity that owns this slot
-   * Accessed in constructor, so should be in parameters or a lazy val, otherwise will crash
-   */
+
+  /** Tile Entity that owns this slot Accessed in constructor, so should be in
+    * parameters or a lazy val, otherwise will crash
+    */
   val parent: DataSlotContainer
 
-  /**
-   * Unique name
-   * Accessed in constructor, so should be in parameters or a lazy val, otherwise will crash
-   */
+  /** Unique name Accessed in constructor, so should be in parameters or a lazy
+    * val, otherwise will crash
+    */
   val name: String
 
   parent.dataSlots += (name -> this)
@@ -41,7 +39,10 @@ trait DataSlot {
     v
   }
 
-  def execWithChangeNotifyConditional[T](f: => T, condition: T => Boolean): T = {
+  def execWithChangeNotifyConditional[T](
+      f: => T,
+      condition: T => Boolean
+  ): T = {
     val v = f
     if (condition(v))
       parent.dataSlotChanged(this)

@@ -16,11 +16,18 @@ abstract class TileControllerGui extends TileController {
 
   def onClick(player: EntityPlayer) = {
     import net.bdew.lib.helpers.ChatHelper._
-    val missing = cfg.required.filter({ case (mod, cnt) => getNumOfModules(mod) < cnt })
+    val missing = cfg.required.filter({ case (mod, cnt) =>
+      getNumOfModules(mod) < cnt
+    })
     if (missing.nonEmpty) {
-      player.addChatMessage(L("bdlib.multiblock.incomplete").setColor(Color.RED))
+      player.addChatMessage(
+        L("bdlib.multiblock.incomplete").setColor(Color.RED)
+      )
       for ((mod, cnt) <- missing)
-        player.addChatMessage(L("- %s %s", cnt.toString, L(resources.getModuleName(mod))).setColor(Color.RED))
+        player.addChatMessage(
+          L("- %s %s", cnt.toString, L(resources.getModuleName(mod)))
+            .setColor(Color.RED)
+        )
     } else openGui(player)
   }
 

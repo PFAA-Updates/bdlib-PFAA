@@ -17,10 +17,15 @@ import net.minecraftforge.fluids.{Fluid, FluidRegistry, FluidStack}
 case class FluidResource(fluid: Fluid) extends ResourceKind {
   override def getTexture = new IconWrapper(Texture.BLOCKS, fluid.getIcon)
   override def getColor = Color.fromInt(fluid.getColor)
-  override def getLocalizedName = fluid.getLocalizedName(new FluidStack(fluid, 1))
+  override def getLocalizedName =
+    fluid.getLocalizedName(new FluidStack(fluid, 1))
   override def getUnlocalizedName = fluid.getUnlocalizedName
   override def getFormattedString(amount: Double, capacity: Double) =
-    Misc.toLocalF("resource.fluid.format", DecFormat.round(amount), DecFormat.round(capacity))
+    Misc.toLocalF(
+      "resource.fluid.format",
+      DecFormat.round(amount),
+      DecFormat.round(capacity)
+    )
   override def capacityMultiplier = 1
   override def toString = "FluidResource(%s)".format(getUnlocalizedName)
   override def helperObject = FluidResourceHelper

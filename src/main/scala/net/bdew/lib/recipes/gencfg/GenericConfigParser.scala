@@ -19,7 +19,7 @@ trait GenericConfigParser extends RecipeParser {
     ("0x" ~> "[0-9A-Fa-f]+".r) ^^ { case x => Integer.parseInt(x, 16).toDouble }
       | decimalNumber ^^ { case x => x.toDouble }
       | ("-" ~> decimalNumber) ^^ { case x => -x.toDouble }
-    )
+  )
 
   def cvNum = signedNumber ^^ EntryDouble
   def cvStr = str ^^ EntryStr

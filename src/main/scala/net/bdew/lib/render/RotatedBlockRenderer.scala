@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection
 object RotatedBlockRenderer extends BaseBlockRenderHandler {
   val filterIconDraw =
     (for (dir <- ForgeDirection.VALID_DIRECTIONS)
-    yield (dir, new EdgeDraw(RectF(0.35F, 0.35F, 0.65F, 0.65F), dir))).toMap
+      yield (dir, new EdgeDraw(RectF(0.35f, 0.35f, 0.65f, 0.65f), dir))).toMap
 
   def setRenderRotation(renderer: RenderBlocks, side: ForgeDirection): Unit = {
     side.ordinal() match {
@@ -59,14 +59,33 @@ object RotatedBlockRenderer extends BaseBlockRenderHandler {
     renderer.uvRotateBottom = 0
   }
 
-  override def renderInventoryBlock(block: Block, metadata: Int, modelID: Int, renderer: RenderBlocks) {
-    setRenderRotation(renderer, block.asInstanceOf[BaseRotatableBlock].getDefaultFacing)
+  override def renderInventoryBlock(
+      block: Block,
+      metadata: Int,
+      modelID: Int,
+      renderer: RenderBlocks
+  ) {
+    setRenderRotation(
+      renderer,
+      block.asInstanceOf[BaseRotatableBlock].getDefaultFacing
+    )
     RenderUtils.renderSimpleBlockItem(block, metadata, renderer)
     clearRenderRotation(renderer)
   }
 
-  override def renderWorldBlock(world: IBlockAccess, x: Int, y: Int, z: Int, block: Block, modelId: Int, renderer: RenderBlocks): Boolean = {
-    setRenderRotation(renderer, block.asInstanceOf[BaseRotatableBlock].getFacing(world, x, y, z))
+  override def renderWorldBlock(
+      world: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      block: Block,
+      modelId: Int,
+      renderer: RenderBlocks
+  ): Boolean = {
+    setRenderRotation(
+      renderer,
+      block.asInstanceOf[BaseRotatableBlock].getFacing(world, x, y, z)
+    )
     renderer.renderStandardBlock(block, x, y, z)
     clearRenderRotation(renderer)
     true

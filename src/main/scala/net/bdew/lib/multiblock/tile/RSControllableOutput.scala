@@ -16,6 +16,10 @@ trait RSControllableOutput extends TileEntity {
   def checkCanOutput(cfg: OutputConfigRSControllable): Boolean = {
     if (cfg.rsMode == RSMode.ALWAYS) return true
     if (cfg.rsMode == RSMode.NEVER) return false
-    return getWorldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord) ^ (cfg.rsMode == RSMode.RS_OFF)
+    return getWorldObj.isBlockIndirectlyGettingPowered(
+      xCoord,
+      yCoord,
+      zCoord
+    ) ^ (cfg.rsMode == RSMode.RS_OFF)
   }
 }

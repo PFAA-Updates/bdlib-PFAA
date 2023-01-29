@@ -9,7 +9,10 @@
 
 package net.bdew.lib.render
 
-import cpw.mods.fml.client.registry.{ISimpleBlockRenderingHandler, RenderingRegistry}
+import cpw.mods.fml.client.registry.{
+  ISimpleBlockRenderingHandler,
+  RenderingRegistry
+}
 
 abstract class BaseBlockRenderHandler extends ISimpleBlockRenderingHandler {
   val id = RenderingRegistry.getNextAvailableRenderId

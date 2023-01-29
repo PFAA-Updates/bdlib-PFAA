@@ -22,12 +22,23 @@ class BlockAccessProxy(base: IBlockAccess) extends IBlockAccess {
   override def getTileEntity(x: Int, y: Int, z: Int) =
     base.getTileEntity(x, y, z)
 
-  override def isSideSolid(x: Int, y: Int, z: Int, side: ForgeDirection, default: Boolean) =
+  override def isSideSolid(
+      x: Int,
+      y: Int,
+      z: Int,
+      side: ForgeDirection,
+      default: Boolean
+  ) =
     base.isSideSolid(x, y, z, side, default)
 
   override def getHeight = base.getHeight
 
-  override def getLightBrightnessForSkyBlocks(x: Int, y: Int, z: Int, lightValue: Int) =
+  override def getLightBrightnessForSkyBlocks(
+      x: Int,
+      y: Int,
+      z: Int,
+      lightValue: Int
+  ) =
     base.getLightBrightnessForSkyBlocks(x, y, z, lightValue)
 
   override def isBlockProvidingPowerTo(x: Int, y: Int, z: Int, side: Int) =

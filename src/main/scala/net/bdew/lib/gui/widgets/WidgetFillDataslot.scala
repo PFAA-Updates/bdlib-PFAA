@@ -12,7 +12,14 @@ package net.bdew.lib.gui.widgets
 import net.bdew.lib.data.base.DataSlotNumeric
 import net.bdew.lib.gui._
 
-class WidgetFillDataSlot[T](val rect: Rect, val texture: Texture, dir: Direction.Direction, dSlot: DataSlotNumeric[T], maxVal: T)(implicit num: Numeric[T]) extends Widget {
+class WidgetFillDataSlot[T](
+    val rect: Rect,
+    val texture: Texture,
+    dir: Direction.Direction,
+    dSlot: DataSlotNumeric[T],
+    maxVal: T
+)(implicit num: Numeric[T])
+    extends Widget {
 
   import num.mkNumericOps
 
@@ -30,5 +37,3 @@ class WidgetFillDataSlot[T](val rect: Rect, val texture: Texture, dir: Direction
     }
   }
 }
-
-

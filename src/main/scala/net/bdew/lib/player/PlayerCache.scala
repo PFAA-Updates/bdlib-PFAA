@@ -54,7 +54,9 @@ class PlayerCache[T] extends mutable.Map[EntityPlayer, T] {
   def handlePlayerLogout(ev: PlayerLoggedOutEvent) = reset(ev.player)
 
   @SubscribeEvent
-  def handlePlayerChangedDimension(ev: PlayerChangedDimensionEvent) = reset(ev.player)
+  def handlePlayerChangedDimension(ev: PlayerChangedDimensionEvent) = reset(
+    ev.player
+  )
 
   @SubscribeEvent
   def handlePlayerRespawn(ev: PlayerRespawnEvent) = reset(ev.player)

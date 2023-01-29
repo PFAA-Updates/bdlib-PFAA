@@ -21,7 +21,9 @@ trait NamedBlock extends Block {
   def name: String
 }
 
-class SimpleBlock(val name: String, material: Material) extends Block(material) with NamedBlock {
+class SimpleBlock(val name: String, material: Material)
+    extends Block(material)
+    with NamedBlock {
   val modId = Misc.getActiveModId
   setBlockName(modId + "." + name)
 

@@ -26,7 +26,8 @@ class OutputConfigItems extends OutputConfig with OutputConfigRSControllable {
 
   def handleConfigPacket(m: MsgOutputCfg) = m match {
     case MsgOutputCfgRSMode(_, r) => rsMode = r
-    case _ => sys.error("Invalid output config packet %s to config %s".format(m, this))
+    case _ =>
+      sys.error("Invalid output config packet %s to config %s".format(m, this))
   }
 
 }

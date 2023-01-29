@@ -15,7 +15,8 @@ import net.bdew.lib.gui.{Point, Rect, Texture}
 
 import scala.collection.mutable
 
-class WidgetPowerGauge(val rect: Rect, texture: Texture, dSlot: DataSlotPower) extends Widget {
+class WidgetPowerGauge(val rect: Rect, texture: Texture, dSlot: DataSlotPower)
+    extends Widget {
   val a = rect.map(_.round)
 
   override def draw(mouse: Point) {
@@ -23,5 +24,8 @@ class WidgetPowerGauge(val rect: Rect, texture: Texture, dSlot: DataSlotPower) e
     parent.drawTextureInterpolate(rect, texture, 0, 1 - fill, 1, 1)
   }
 
-  override def handleTooltip(p: Point, tip: mutable.MutableList[String]) = tip += DecFormat.round(dSlot.stored) + "/" + DecFormat.round(dSlot.capacity) + " MJ"
+  override def handleTooltip(p: Point, tip: mutable.MutableList[String]) =
+    tip += DecFormat.round(dSlot.stored) + "/" + DecFormat.round(
+      dSlot.capacity
+    ) + " MJ"
 }

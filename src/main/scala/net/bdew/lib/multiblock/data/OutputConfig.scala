@@ -30,7 +30,8 @@ class OutputConfigInvalid extends OutputConfig {
 object OutputConfigManager {
   var loaders = Map.empty[String, () => OutputConfig]
   def register(id: String, loader: () => OutputConfig) = loaders += id -> loader
-  def create(id: String) = loaders.get(id).map(_.apply()).getOrElse(new OutputConfigInvalid)
+  def create(id: String) =
+    loaders.get(id).map(_.apply()).getOrElse(new OutputConfigInvalid)
 
   register("fluid", () => new OutputConfigFluid)
   register("power", () => new OutputConfigPower)

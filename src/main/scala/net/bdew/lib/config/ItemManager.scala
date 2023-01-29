@@ -15,11 +15,16 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.{Item, ItemStack}
 
 class ItemManager(creativeTab: CreativeTabs) {
-  def regSimpleItem(name: String): SimpleItem = regItem(new SimpleItem(name), name)
+  def regSimpleItem(name: String): SimpleItem =
+    regItem(new SimpleItem(name), name)
 
   def regItem[T <: NamedItem](item: T): T = regItem[T](item, item.name)
 
-  def regItem[T <: Item](item: T, name: String, addStack: Boolean = false): T = {
+  def regItem[T <: Item](
+      item: T,
+      name: String,
+      addStack: Boolean = false
+  ): T = {
     GameRegistry.registerItem(item, name)
     item.setCreativeTab(creativeTab)
     if (addStack)

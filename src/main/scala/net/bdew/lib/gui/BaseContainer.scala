@@ -15,20 +15,30 @@ import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
 
 abstract class BaseContainer(te: IInventory) extends NoInvContainer {
-  override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = {
+  override def transferStackInSlot(
+      player: EntityPlayer,
+      slot: Int
+  ): ItemStack = {
     var stack = getSlot(slot).getStack
     if (getSlot(slot).inventory == player.inventory) {
-      stack = ItemUtils.addStackToSlots(stack, te, 0 until te.getSizeInventory, true)
+      stack =
+        ItemUtils.addStackToSlots(stack, te, 0 until te.getSizeInventory, true)
     } else {
-      stack = ItemUtils.addStackToSlots(stack, player.inventory, 9 until player.inventory.mainInventory.length, true)
+      stack = ItemUtils.addStackToSlots(
+        stack,
+        player.inventory,
+        9 until player.inventory.mainInventory.length,
+        true
+      )
       // Only put in hotbar if the rest is full
       if (stack != null)
-        stack = ItemUtils.addStackToSlots(stack, player.inventory, 0 until 9, true)
+        stack =
+          ItemUtils.addStackToSlots(stack, player.inventory, 0 until 9, true)
     }
     getSlot(slot).putStack(stack)
     return null
   }
 
-  override def canInteractWith(player: EntityPlayer) = te.isUseableByPlayer(player)
+  override def canInteractWith(player: EntityPlayer) =
+    te.isUseableByPlayer(player)
 }
-

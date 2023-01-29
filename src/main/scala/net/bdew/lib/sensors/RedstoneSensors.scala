@@ -15,11 +15,17 @@ import net.bdew.lib.gui.{DrawTarget, IconWrapper, Rect, Texture}
 import net.minecraft.init.Blocks
 
 abstract class RedstoneSensors[T] extends SensorSystem[T, Boolean](false) {
-  lazy val rsOn = new IconWrapper(Texture.BLOCKS, Blocks.redstone_torch.getIcon(0, 0))
-  lazy val rsOff = new IconWrapper(Texture.BLOCKS, Blocks.unlit_redstone_torch.getIcon(0, 0))
+  lazy val rsOn =
+    new IconWrapper(Texture.BLOCKS, Blocks.redstone_torch.getIcon(0, 0))
+  lazy val rsOff =
+    new IconWrapper(Texture.BLOCKS, Blocks.unlit_redstone_torch.getIcon(0, 0))
 
   @SideOnly(Side.CLIENT)
-  override def drawResult(result: Boolean, rect: Rect, target: DrawTarget): Unit = {
+  override def drawResult(
+      result: Boolean,
+      rect: Rect,
+      target: DrawTarget
+  ): Unit = {
     if (result)
       target.drawTexture(rect, rsOn)
     else

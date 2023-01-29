@@ -14,12 +14,14 @@ import net.bdew.lib.data.DataSlotOption
 import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer) extends DataSlotOption[ResourceKind] {
+case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer)
+    extends DataSlotOption[ResourceKind] {
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {
     value foreach { r =>
-      t.setTag(name,
+      t.setTag(
+        name,
         Misc.applyMutator(new NBTTagCompound) { tag =>
           r.helperObject.saveToNBT(tag, r)
           tag.setString("kind", r.helperObject.id)
@@ -32,7 +34,9 @@ case class DataSlotResourceKindOption(name: String, parent: DataSlotContainer) e
     if (t.hasKey(name)) {
       val tag = t.getCompoundTag(name)
       value = if (tag.hasKey("kind")) {
-        ResourceManager.resourceHelpers.get(tag.getString("kind")).flatMap(_.loadFromNBT(tag))
+        ResourceManager.resourceHelpers
+          .get(tag.getString("kind"))
+          .flatMap(_.loadFromNBT(tag))
       } else None
     } else unset()
   }

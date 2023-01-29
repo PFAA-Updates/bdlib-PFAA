@@ -10,7 +10,11 @@
 package net.bdew.lib.render.connected
 
 import net.bdew.lib.block.BlockRef
-import net.bdew.lib.render.{BaseBlockRenderHandler, RenderUtils, RotatedBlockRenderer}
+import net.bdew.lib.render.{
+  BaseBlockRenderHandler,
+  RenderUtils,
+  RotatedBlockRenderer
+}
 import net.bdew.lib.rotate.BaseRotatableBlock
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.{RenderBlocks, Tessellator}
@@ -19,9 +23,14 @@ import net.minecraftforge.common.util.ForgeDirection
 import org.lwjgl.opengl.GL11
 
 object ConnectedRenderer extends BaseBlockRenderHandler {
-  override def renderInventoryBlock(block: Block, metadata: Int, modelID: Int, renderer: RenderBlocks) {
+  override def renderInventoryBlock(
+      block: Block,
+      metadata: Int,
+      modelID: Int,
+      renderer: RenderBlocks
+  ) {
     val tessellator = Tessellator.instance
-    GL11.glTranslatef(-0.5F, -0.5F, -0.5F)
+    GL11.glTranslatef(-0.5f, -0.5f, -0.5f)
 
     val edge = block.asInstanceOf[ConnectedTextureBlock].edgeIcon
 
@@ -32,24 +41,58 @@ object ConnectedRenderer extends BaseBlockRenderHandler {
       tessellator.draw()
     }
 
-    GL11.glTranslatef(0.5F, 0.5F, 0.5F)
+    GL11.glTranslatef(0.5f, 0.5f, 0.5f)
   }
 
-  override def renderWorldBlock(world: IBlockAccess, x: Int, y: Int, z: Int, block: Block, modelId: Int, renderer: RenderBlocks): Boolean = {
+  override def renderWorldBlock(
+      world: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      block: Block,
+      modelId: Int,
+      renderer: RenderBlocks
+  ): Boolean = {
     if (block.isInstanceOf[BaseRotatableBlock])
-      RotatedBlockRenderer.renderWorldBlock(world, x, y, z, block, modelId, renderer)
+      RotatedBlockRenderer.renderWorldBlock(
+        world,
+        x,
+        y,
+        z,
+        block,
+        modelId,
+        renderer
+      )
     else
       renderer.renderStandardBlock(block, x, y, z)
 
     val pos = ConnectedHelper.Vec3F(x, y, z)
     for (face <- ForgeDirection.VALID_DIRECTIONS)
-      if (block.shouldSideBeRendered(world, x + face.offsetX, y + face.offsetY, z + face.offsetZ, face.ordinal()))
-        drawFaceEdges(world, pos, face, block.asInstanceOf[ConnectedTextureBlock])
+      if (
+        block.shouldSideBeRendered(
+          world,
+          x + face.offsetX,
+          y + face.offsetY,
+          z + face.offsetZ,
+          face.ordinal()
+        )
+      )
+        drawFaceEdges(
+          world,
+          pos,
+          face,
+          block.asInstanceOf[ConnectedTextureBlock]
+        )
 
     return true
   }
 
-  def drawFaceEdges(world: IBlockAccess, pos: ConnectedHelper.Vec3F, face: ForgeDirection, block: ConnectedTextureBlock) {
+  def drawFaceEdges(
+      world: IBlockAccess,
+      pos: ConnectedHelper.Vec3F,
+      face: ForgeDirection,
+      block: ConnectedTextureBlock
+  ) {
     val edge = block.edgeIcon
     val canConnect = block.canConnect(world, pos.asBlockRef, _: BlockRef)
     val sides = ConnectedHelper.neighbourFaces(face)
@@ -58,7 +101,12 @@ object ConnectedRenderer extends BaseBlockRenderHandler {
     Tessellator.instance.setColorOpaque_F(m, m, m)
 
     val fo = pos + face
-    val b = block.getMixedBrightnessForBlock(world, fo.x.toInt, fo.y.toInt, fo.z.toInt)
+    val b = block.getMixedBrightnessForBlock(
+      world,
+      fo.x.toInt,
+      fo.y.toInt,
+      fo.z.toInt
+    )
     Tessellator.instance.setBrightness(b)
 
     val U = !canConnect((pos + sides.top).asBlockRef)
@@ -84,13 +132,17 @@ object ConnectedRenderer extends BaseBlockRenderHandler {
     if (L) ConnectedHelper.draw(face, 6).doDraw(pos, edge)
 
     if (block.isInstanceOf[BlockAdditionalRender]) {
-      val overlays = block.asInstanceOf[BlockAdditionalRender].getFaceOverlays(world, pos.x.toInt, pos.y.toInt, pos.z.toInt, face)
+      val overlays = block
+        .asInstanceOf[BlockAdditionalRender]
+        .getFaceOverlays(world, pos.x.toInt, pos.y.toInt, pos.z.toInt, face)
       for (overlay <- overlays) {
-        Tessellator.instance.setColorOpaque_F(overlay.color.r, overlay.color.g, overlay.color.b)
+        Tessellator.instance.setColorOpaque_F(
+          overlay.color.r,
+          overlay.color.g,
+          overlay.color.b
+        )
         ConnectedHelper.draw(face, 8).doDraw(pos, overlay.icon)
       }
     }
   }
 }
-
-

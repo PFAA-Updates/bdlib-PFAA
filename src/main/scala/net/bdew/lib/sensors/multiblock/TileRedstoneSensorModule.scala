@@ -17,7 +17,10 @@ import net.minecraft.block.Block
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.world.World
 
-abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity], block: BlockRedstoneSensorModule[_]) extends TileModule {
+abstract class TileRedstoneSensorModule(
+    val system: RedstoneSensors[TileEntity],
+    block: BlockRedstoneSensorModule[_]
+) extends TileModule {
   override val kind = "Sensor"
   override def getCore = getCoreAs[CIRedstoneSensors]
 
@@ -38,7 +41,8 @@ abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity],
   }
 
   override def canConnectToCore(br: BlockRef): Boolean =
-    br.getTile[CIRedstoneSensors](worldObj).exists(_.redstoneSensorSystem == system)
+    br.getTile[CIRedstoneSensors](worldObj)
+      .exists(_.redstoneSensorSystem == system)
 
   def isSignalOn = block.isSignalOn(worldObj, xCoord, yCoord, zCoord)
 
@@ -49,6 +53,15 @@ abstract class TileRedstoneSensorModule(val system: RedstoneSensors[TileEntity],
     }
   })
 
-  override def shouldRefresh(oldBlock: Block, newBlock: Block, oldMeta: Int, newMeta: Int, world: World, x: Int, y: Int, z: Int) =
+  override def shouldRefresh(
+      oldBlock: Block,
+      newBlock: Block,
+      oldMeta: Int,
+      newMeta: Int,
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int
+  ) =
     newBlock != oldBlock
 }

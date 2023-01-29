@@ -12,9 +12,8 @@ package net.bdew.lib.items
 import net.minecraft.block.Block
 import net.minecraft.item.{Item, ItemBlock, ItemStack}
 
-/**
- * Allows matching Items in ItemStacks in scala pattern matches
- */
+/** Allows matching Items in ItemStacks in scala pattern matches
+  */
 object IStack {
   def unapply(x: ItemStack): Option[Item] =
     if (x == null || x.getItem == null)
@@ -23,9 +22,8 @@ object IStack {
       Some(x.getItem)
 }
 
-/**
- * Allows matching Blocks in ItemStacks in scala pattern matches
- */
+/** Allows matching Blocks in ItemStacks in scala pattern matches
+  */
 object IStackBlock {
   def unapply(x: ItemStack): Option[Block] =
     if (x == null || x.getItem == null || !x.getItem.isInstanceOf[ItemBlock])

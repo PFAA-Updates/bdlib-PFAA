@@ -13,7 +13,10 @@ import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids._
 
-abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank with DataSlot {
+abstract class DataSlotTankBase(sz: Int)
+    extends FluidTank(sz)
+    with IFluidTank
+    with DataSlot {
   var oldStack: FluidStack = null
 
   parent.onServerTick(checkUpdate)
@@ -51,12 +54,19 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
       setCapacity(tag.getInteger("size"))
   }
 
-  override def setFluid(fluid: FluidStack) = execWithChangeNotify(super.setFluid(fluid))
-  override def setCapacity(capacity: Int) = execWithChangeNotify(super.setCapacity(capacity))
+  override def setFluid(fluid: FluidStack) = execWithChangeNotify(
+    super.setFluid(fluid)
+  )
+  override def setCapacity(capacity: Int) = execWithChangeNotify(
+    super.setCapacity(capacity)
+  )
 
   override def drain(maxDrain: Int, doDrain: Boolean) =
     if (doDrain)
-      execWithChangeNotifyConditional[FluidStack](super.drain(maxDrain, true), _ != null)
+      execWithChangeNotifyConditional[FluidStack](
+        super.drain(maxDrain, true),
+        _ != null
+      )
     else
       super.drain(maxDrain, false)
 
@@ -67,10 +77,17 @@ abstract class DataSlotTankBase(sz: Int) extends FluidTank(sz) with IFluidTank w
       super.fill(resource, false)
 }
 
-case class DataSlotTank(name: String, parent: DataSlotContainer, size: Int) extends DataSlotTankBase(size)
+case class DataSlotTank(name: String, parent: DataSlotContainer, size: Int)
+    extends DataSlotTankBase(size)
 
-case class DataSlotTankRestricted(name: String, parent: DataSlotContainer, var size: Int, filterFluid: Fluid) extends DataSlotTankBase(size) {
-  def fill(amount: Int, doFill: Boolean) = super.fill(new FluidStack(filterFluid, amount), doFill)
+case class DataSlotTankRestricted(
+    name: String,
+    parent: DataSlotContainer,
+    var size: Int,
+    filterFluid: Fluid
+) extends DataSlotTankBase(size) {
+  def fill(amount: Int, doFill: Boolean) =
+    super.fill(new FluidStack(filterFluid, amount), doFill)
 
   override def fill(resource: FluidStack, doFill: Boolean): Int = {
     if ((resource != null) && (resource.getFluid != filterFluid)) return 0

@@ -13,7 +13,8 @@ import java.io.{ObjectInputStream, ObjectOutputStream}
 
 import net.minecraft.nbt.NBTTagCompound
 
-class NBTTagCompoundSerialize(var tag: NBTTagCompound = new NBTTagCompound) extends Serializable {
+class NBTTagCompoundSerialize(var tag: NBTTagCompound = new NBTTagCompound)
+    extends Serializable {
 
   private def writeObject(out: ObjectOutputStream) {
     out.writeObject(NBTHelper.toBytes(tag))
@@ -29,5 +30,6 @@ object NBTTagCompoundSerialize {
   import scala.language.implicitConversions
 
   implicit def ser2content(v: NBTTagCompoundSerialize): NBTTagCompound = v.tag
-  implicit def content2ser(v: NBTTagCompound): NBTTagCompoundSerialize = new NBTTagCompoundSerialize(v)
+  implicit def content2ser(v: NBTTagCompound): NBTTagCompoundSerialize =
+    new NBTTagCompoundSerialize(v)
 }

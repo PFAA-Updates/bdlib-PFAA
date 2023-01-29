@@ -12,7 +12,15 @@ package net.bdew.lib.gui.widgets
 import net.bdew.lib.gui.{Point, Rect}
 import net.minecraft.client.gui.{FontRenderer, GuiTextField}
 
-class WidgetTextEdit(val rect: Rect, fr: FontRenderer) extends GuiTextField(fr, rect.x.round, rect.y.round, rect.w.round, rect.h.round) with Widget {
+class WidgetTextEdit(val rect: Rect, fr: FontRenderer)
+    extends GuiTextField(
+      fr,
+      rect.x.round,
+      rect.y.round,
+      rect.w.round,
+      rect.h.round
+    )
+    with Widget {
 
   override def mouseClicked(p: Point, button: Int) = {
     val pp = p + rect.origin

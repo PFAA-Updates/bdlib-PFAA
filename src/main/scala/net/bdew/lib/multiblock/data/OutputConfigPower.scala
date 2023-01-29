@@ -12,7 +12,9 @@ package net.bdew.lib.multiblock.data
 import net.bdew.lib.multiblock.network.MsgOutputCfg
 import net.minecraft.nbt.NBTTagCompound
 
-class OutputConfigPower(var unit: String = "MJ") extends OutputConfig with OutputConfigRSControllable {
+class OutputConfigPower(var unit: String = "MJ")
+    extends OutputConfig
+    with OutputConfigRSControllable {
   override val id = "power"
   var avg = 0.0
   var rsMode = RSMode.ALWAYS
@@ -37,6 +39,7 @@ class OutputConfigPower(var unit: String = "MJ") extends OutputConfig with Outpu
 
   def handleConfigPacket(m: MsgOutputCfg) = m match {
     case MsgOutputCfgRSMode(_, r) => rsMode = r
-    case _ => sys.error("Invalid output config packet %s to config %s".format(m, this))
+    case _ =>
+      sys.error("Invalid output config packet %s to config %s".format(m, this))
   }
 }

@@ -28,7 +28,8 @@ object Type {
     override def toNBT(p: Byte): NBTTagByte = new NBTTagByte(p)
   }
 
-  implicit object TShort extends TypeDef(2, classOf[NBTTagShort], classOf[Short]) {
+  implicit object TShort
+      extends TypeDef(2, classOf[NBTTagShort], classOf[Short]) {
     override def toVal(p: NBTTagShort): Short = p.func_150289_e()
     override def toNBT(p: Short): NBTTagShort = new NBTTagShort(p)
   }
@@ -43,22 +44,26 @@ object Type {
     override def toNBT(p: Long): NBTTagLong = new NBTTagLong(p)
   }
 
-  implicit object TFloat extends TypeDef(5, classOf[NBTTagFloat], classOf[Float]) {
+  implicit object TFloat
+      extends TypeDef(5, classOf[NBTTagFloat], classOf[Float]) {
     override def toVal(p: NBTTagFloat): Float = p.func_150288_h()
     override def toNBT(p: Float): NBTTagFloat = new NBTTagFloat(p)
   }
 
-  implicit object TDouble extends TypeDef(6, classOf[NBTTagDouble], classOf[Double]) {
+  implicit object TDouble
+      extends TypeDef(6, classOf[NBTTagDouble], classOf[Double]) {
     override def toVal(p: NBTTagDouble): Double = p.func_150286_g()
     override def toNBT(p: Double): NBTTagDouble = new NBTTagDouble(p)
   }
 
-  implicit object TByteArray extends TypeDef(7, classOf[NBTTagByteArray], classOf[Array[Byte]]) {
+  implicit object TByteArray
+      extends TypeDef(7, classOf[NBTTagByteArray], classOf[Array[Byte]]) {
     override def toVal(p: NBTTagByteArray): Array[Byte] = p.func_150292_c()
     override def toNBT(p: Array[Byte]): NBTTagByteArray = new NBTTagByteArray(p)
   }
 
-  implicit object TString extends TypeDef(8, classOf[NBTTagString], classOf[String]) {
+  implicit object TString
+      extends TypeDef(8, classOf[NBTTagString], classOf[String]) {
     override def toVal(p: NBTTagString): String = p.func_150285_a_()
     override def toNBT(p: String): NBTTagString = new NBTTagString(p)
   }
@@ -67,11 +72,10 @@ object Type {
 
   implicit object TCompound extends TypeDefSimple(10, classOf[NBTTagCompound])
 
-  implicit object TIntArray extends TypeDef(11, classOf[NBTTagIntArray], classOf[Array[Int]]) {
+  implicit object TIntArray
+      extends TypeDef(11, classOf[NBTTagIntArray], classOf[Array[Int]]) {
     override def toVal(p: NBTTagIntArray): Array[Int] = p.func_150302_c()
     override def toNBT(p: Array[Int]): NBTTagIntArray = new NBTTagIntArray(p)
   }
 
 }
-
-

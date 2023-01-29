@@ -21,13 +21,20 @@ abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
   system.register(this)
 
   def getTooltip(obj: T): List[String] = List(localizedName)
-  def getParamTooltip(obj: T, param: GenericSensorParameter): List[String] = List(param.localizedName)
+  def getParamTooltip(obj: T, param: GenericSensorParameter): List[String] =
+    List(param.localizedName)
 
   def localizedName = Misc.toLocal(system.localizationPrefix + "." + uid)
 
   def defaultParameter: GenericSensorParameter
 
-  def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: T): GenericSensorParameter
+  def paramClicked(
+      current: GenericSensorParameter,
+      item: ItemStack,
+      button: Int,
+      mod: Int,
+      obj: T
+  ): GenericSensorParameter
 
   def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound)
   def loadParameter(tag: NBTTagCompound): GenericSensorParameter
@@ -39,5 +46,10 @@ abstract class GenericSensorType[-T, +R](system: SensorSystem[T, R]) {
   def drawSensor(rect: Rect, target: DrawTarget, obj: T): Unit
 
   @SideOnly(Side.CLIENT)
-  def drawParameter(rect: Rect, target: DrawTarget, obj: T, param: GenericSensorParameter): Unit
+  def drawParameter(
+      rect: Rect,
+      target: DrawTarget,
+      obj: T,
+      param: GenericSensorParameter
+  ): Unit
 }

@@ -15,7 +15,11 @@ import net.bdew.lib.sensors.SensorSystem
 
 import scala.collection.mutable
 
-class WidgetSensorResult[T](val p: Point, state: => T, system: SensorSystem[_, T]) extends Widget {
+class WidgetSensorResult[T](
+    val p: Point,
+    state: => T,
+    system: SensorSystem[_, T]
+) extends Widget {
   override val rect = new Rect(p, 16, 16)
 
   override def handleTooltip(p: Point, tip: mutable.MutableList[String]) =

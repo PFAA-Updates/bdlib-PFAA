@@ -15,14 +15,16 @@ import net.bdew.lib.machine.ProcessorMachine
 import net.bdew.lib.tile.TileExtended
 import net.bdew.lib.tile.inventory.{PersistentInventoryTile, SidedInventory}
 
-abstract class TileBaseProcessor extends TileExtended
-with TileDataSlots
-with PersistentInventoryTile
-with SidedInventory
-with TilePoweredBase {
+abstract class TileBaseProcessor
+    extends TileExtended
+    with TileDataSlots
+    with PersistentInventoryTile
+    with SidedInventory
+    with TilePoweredBase {
   def cfg: ProcessorMachine
   val power = DataSlotPower("power", this)
-  val progress = DataSlotFloat("progress", this).setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
+  val progress =
+    DataSlotFloat("progress", this).setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
   configurePower(cfg)
 
@@ -36,7 +38,10 @@ with TilePoweredBase {
       if (isWorking) {
 
         if ((progress < 1) && (power.stored > cfg.activationEnergy)) {
-          val maxConsume = Math.min(Math.max(cfg.powerUseRate * power.stored, cfg.activationEnergy), cfg.mjPerItem * (1 - progress))
+          val maxConsume = Math.min(
+            Math.max(cfg.powerUseRate * power.stored, cfg.activationEnergy),
+            cfg.mjPerItem * (1 - progress)
+          )
           val consumed = power.extract(maxConsume, false)
           progress += consumed / cfg.mjPerItem
         }
@@ -49,18 +54,15 @@ with TilePoweredBase {
     }
   }
 
-  /**
-   * Return true when an operation is in progress
-   */
+  /** Return true when an operation is in progress
+    */
   def isWorking: Boolean
 
-  /**
-   * Try starting a new operation, return true if successful
-   */
+  /** Try starting a new operation, return true if successful
+    */
   def tryStart(): Boolean
 
-  /**
-   * Perform output when operation is done, return true if successful
-   */
+  /** Perform output when operation is done, return true if successful
+    */
   def tryFinish(): Boolean
 }

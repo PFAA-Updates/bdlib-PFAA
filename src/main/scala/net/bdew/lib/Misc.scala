@@ -25,15 +25,18 @@ import net.minecraftforge.fluids.{Fluid, FluidStack}
 import net.minecraftforge.oredict.ShapedOreRecipe
 
 object Misc {
-  def getActiveModId = Option(Loader.instance().activeModContainer().getModId) getOrElse "<UNKNOWN>"
+  def getActiveModId = Option(
+    Loader.instance().activeModContainer().getModId
+  ) getOrElse "<UNKNOWN>"
 
   def toLocal(s: String) = StatCollector.translateToLocal(s)
-  def toLocalF(s: String, params: Any*) = StatCollector.translateToLocal(s).format(params: _*)
+  def toLocalF(s: String, params: Any*) =
+    StatCollector.translateToLocal(s).format(params: _*)
   def hasLocal(s: String) = StatCollector.canTranslate(s)
 
   def flattenRecipe(pattern: Seq[String], items: Map[Char, AnyRef]) =
-    pattern ++ items.flatMap {
-      case (k, v) => Seq(new Character(k), v)
+    pattern ++ items.flatMap { case (k, v) =>
+      Seq(new Character(k), v)
     }
 
   def wrapTag(n: String, f: (NBTTagCompound) => Any)(t: NBTTagCompound) {
@@ -42,23 +45,42 @@ object Misc {
     t.setTag(n, p)
   }
 
-  def addRecipe(result: ItemStack, pattern: Seq[String], items: Map[Char, AnyRef]) =
+  def addRecipe(
+      result: ItemStack,
+      pattern: Seq[String],
+      items: Map[Char, AnyRef]
+  ) =
     GameRegistry.addRecipe(result, flattenRecipe(pattern, items): _*)
 
-  def addRecipeOD(result: ItemStack, pattern: Seq[String], items: Map[Char, AnyRef]) =
-    GameRegistry.addRecipe(new ShapedOreRecipe(result, flattenRecipe(pattern, items): _*))
+  def addRecipeOD(
+      result: ItemStack,
+      pattern: Seq[String],
+      items: Map[Char, AnyRef]
+  ) =
+    GameRegistry.addRecipe(
+      new ShapedOreRecipe(result, flattenRecipe(pattern, items): _*)
+    )
 
   def min[T: Ordering](values: T*) = values.min
   def max[T: Ordering](values: T*) = values.max
 
-  def clamp[T](value: T, min: T, max: T)(implicit o: Ordering[T]): T = if (o.gt(value, max)) max else if (o.lt(value, min)) min else value
+  def clamp[T](value: T, min: T, max: T)(implicit o: Ordering[T]): T =
+    if (o.gt(value, max)) max else if (o.lt(value, min)) min else value
 
-  def iterSome[T](list: Seq[T], indexes: Iterable[Int]): Iterable[T] = for (i <- indexes) yield list(i)
-  def iterSomeEnum[T](list: Seq[T], indexes: Iterable[Int]): Iterable[(Int, T)] = for (i <- indexes) yield i -> list(i)
+  def iterSome[T](list: Seq[T], indexes: Iterable[Int]): Iterable[T] = for (
+    i <- indexes
+  ) yield list(i)
+  def iterSomeEnum[T](
+      list: Seq[T],
+      indexes: Iterable[Int]
+  ): Iterable[(Int, T)] = for (i <- indexes) yield i -> list(i)
 
-  def filterType[T](from: Iterable[_], cls: Class[T]) = from.filter(cls.isInstance).asInstanceOf[Iterable[T]]
+  def filterType[T](from: Iterable[_], cls: Class[T]) =
+    from.filter(cls.isInstance).asInstanceOf[Iterable[T]]
 
-  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray.find(x => x != null && x.biomeName == name).orNull
+  def getBiomeByName(name: String) = BiomeGenBase.getBiomeGenArray
+    .find(x => x != null && x.biomeName == name)
+    .orNull
 
   private lazy val modLookup = {
     val mods = new util.ArrayList[ModContainer]
@@ -73,7 +95,9 @@ object Misc {
 
   def haveModVersion(modId: String) = {
     val spec = VersionParser.parseVersionReference(modId)
-    modLookup.contains(spec.getLabel) && spec.containsVersion(modLookup(spec.getLabel).getProcessedVersion)
+    modLookup.contains(spec.getLabel) && spec.containsVersion(
+      modLookup(spec.getLabel).getProcessedVersion
+    )
   }
 
   def getModVersion(modId: String) =
@@ -95,9 +119,18 @@ object Misc {
   def asInstanceOpt[T](cls: Class[T])(v: Any) =
     if (cls.isInstance(v)) Some(v.asInstanceOf[T]) else None
 
-  def getNeighbourTile[T](origin: TileEntity, dir: ForgeDirection, cls: Class[T]) =
-    Option(origin.getWorldObj.getTileEntity(origin.xCoord + dir.offsetX,
-      origin.yCoord + dir.offsetY, origin.zCoord + dir.offsetZ)) flatMap (asInstanceOpt(_, cls))
+  def getNeighbourTile[T](
+      origin: TileEntity,
+      dir: ForgeDirection,
+      cls: Class[T]
+  ) =
+    Option(
+      origin.getWorldObj.getTileEntity(
+        origin.xCoord + dir.offsetX,
+        origin.yCoord + dir.offsetY,
+        origin.zCoord + dir.offsetZ
+      )
+    ) flatMap (asInstanceOpt(_, cls))
 
   @inline def applyMutator[T](f: (T) => Unit, init: T): T = {
     f(init)
@@ -132,34 +165,36 @@ object Misc {
       Client.blockMissingIcon
 
   def getFluidIcon(f: Fluid): IIcon =
-    if (f != null) getFluidIcon(new FluidStack(f, 1)) else Client.blockMissingIcon
+    if (f != null) getFluidIcon(new FluidStack(f, 1))
+    else Client.blockMissingIcon
 
   def getFluidColor(fs: FluidStack): Int =
-    if (fs != null && fs.getFluid != null) fs.getFluid.getColor(fs) else 0xFFFFFF
+    if (fs != null && fs.getFluid != null) fs.getFluid.getColor(fs)
+    else 0xffffff
 
   def getFluidColor(f: Fluid): Int =
-    if (f != null) getFluidColor(new FluidStack(f, 1)) else 0xFFFFFF
+    if (f != null) getFluidColor(new FluidStack(f, 1)) else 0xffffff
 
   lazy val lineSeparator = System.getProperty("line.separator")
 
-  /**
-   * Provides something like java try-with-resources in scala
-   */
+  /** Provides something like java try-with-resources in scala
+    */
   def withAutoClose[T <: AutoCloseable, R](o: T)(f: T => R): R = {
-    val res = try {
-      f(o)
-    } catch {
-      case t1: Throwable =>
-        if (o != null) {
-          try {
-            o.close()
-          } catch {
-            case t2: Throwable =>
-              t1.addSuppressed(t2)
+    val res =
+      try {
+        f(o)
+      } catch {
+        case t1: Throwable =>
+          if (o != null) {
+            try {
+              o.close()
+            } catch {
+              case t2: Throwable =>
+                t1.addSuppressed(t2)
+            }
           }
-        }
-        throw t1
-    }
+          throw t1
+      }
     if (o != null)
       o.close()
     res
@@ -172,4 +207,3 @@ object Misc {
       "%s:%s/%s".format(domain, name, path.mkString("/")).toLowerCase(Locale.US)
 
 }
-

@@ -17,7 +17,11 @@ import net.bdew.lib.multiblock.block.BlockModule
 import net.bdew.lib.recipes.gencfg.ConfigSection
 import net.minecraft.creativetab.CreativeTabs
 
-class MachineManager(val tuning: ConfigSection, guiHandler: GuiHandler, creativeTab: CreativeTabs) {
+class MachineManager(
+    val tuning: ConfigSection,
+    guiHandler: GuiHandler,
+    creativeTab: CreativeTabs
+) {
   def registerMachine[R <: Machine[_]](machine: R): R = {
     machine.tuning = tuning.getSection(machine.name)
     if (machine.tuning.getBoolean("Enabled")) {
@@ -38,9 +42,10 @@ trait MachineManagerMultiblock extends MachineManager {
   override def registerMachine[R <: Machine[_]](machine: R): R = {
     super.registerMachine(machine)
     if (machine.enabled) {
-      Misc.asInstanceOpt(machine, classOf[MachineCore]) foreach { controllerMachine =>
-        controllers += controllerMachine
-        controllerMachine.getController.machine = controllerMachine
+      Misc.asInstanceOpt(machine, classOf[MachineCore]) foreach {
+        controllerMachine =>
+          controllers += controllerMachine
+          controllerMachine.getController.machine = controllerMachine
       }
     }
     machine
@@ -48,7 +53,7 @@ trait MachineManagerMultiblock extends MachineManager {
 
   def getMachinesForBlock(b: BlockModule[_]): Map[MachineCore, (Int, Int)] = {
     (for (machine <- controllers; max <- machine.modules.get(b.kind)) yield {
-      machine ->(machine.required.getOrElse(b.kind, 0), max)
+      machine -> (machine.required.getOrElse(b.kind, 0), max)
     }).toMap
   }
 }

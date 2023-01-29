@@ -24,7 +24,10 @@ trait ItemPoweredBase extends Item {
   }
 
   def useCharge(stack: ItemStack, uses: Int = 1, player: EntityLivingBase) {
-    setCharge(stack, Misc.clamp(getCharge(stack) - uses * mjPerCharge, 0, maxCharge))
+    setCharge(
+      stack,
+      Misc.clamp(getCharge(stack) - uses * mjPerCharge, 0, maxCharge)
+    )
   }
 
   def hasCharges(stack: ItemStack) = getCharge(stack) >= mjPerCharge
@@ -36,7 +39,14 @@ trait ItemPoweredBase extends Item {
   }
 
   def updateDamage(stack: ItemStack) {
-    setDamage(stack, Misc.clamp((100 * (1 - getCharge(stack).toFloat / maxCharge)).round, 1, 100))
+    setDamage(
+      stack,
+      Misc.clamp(
+        (100 * (1 - getCharge(stack).toFloat / maxCharge)).round,
+        1,
+        100
+      )
+    )
   }
 
   def stackWithCharge(charge: Int): ItemStack = {
@@ -45,5 +55,6 @@ trait ItemPoweredBase extends Item {
     return n
   }
 
-  override def setDamage(stack: ItemStack, damage: Int) = super.setDamage(stack, Misc.clamp(damage, 1, 100))
+  override def setDamage(stack: ItemStack, damage: Int) =
+    super.setDamage(stack, Misc.clamp(damage, 1, 100))
 }

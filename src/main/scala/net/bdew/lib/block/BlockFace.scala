@@ -18,5 +18,6 @@ case class BlockFace(x: Int, y: Int, z: Int, face: ForgeDirection) {
 }
 
 object BlockFace {
-  def apply(bp: BlockRef, face: ForgeDirection) = new BlockFace(bp.x, bp.y, bp.z, face)
+  def apply(bp: BlockRef, face: ForgeDirection) =
+    new BlockFace(bp.x, bp.y, bp.z, face)
 }

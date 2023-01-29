@@ -17,10 +17,9 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.world.World
 
-/**
- * Mixin for items that have an internal inventory
- * Subclasses are responsible for registering themselves with the GuiHandler of their mod
- */
+/** Mixin for items that have an internal inventory Subclasses are responsible
+  * for registering themselves with the GuiHandler of their mod
+  */
 trait ItemInventory extends Item with GuiProvider {
   type TEClass = Any
   def guiId: Int
@@ -30,9 +29,17 @@ trait ItemInventory extends Item with GuiProvider {
 
   @SideOnly(Side.CLIENT)
   def makeGui(inv: InventoryItemAdapter, player: EntityPlayer): AnyRef
-  def makeContainer(inv: InventoryItemAdapter, player: EntityPlayer): ContainerItemInventory
+  def makeContainer(
+      inv: InventoryItemAdapter,
+      player: EntityPlayer
+  ): ContainerItemInventory
 
-  def makeAdaptor(player: EntityPlayer) = new InventoryItemAdapter(player, player.inventory.currentItem, invSize, invTagName)
+  def makeAdaptor(player: EntityPlayer) = new InventoryItemAdapter(
+    player,
+    player.inventory.currentItem,
+    invSize,
+    invTagName
+  )
 
   @SideOnly(Side.CLIENT)
   def getGui(te: TEClass, player: EntityPlayer) = {
@@ -40,7 +47,10 @@ trait ItemInventory extends Item with GuiProvider {
     if (stack.getItem == this) {
       makeGui(makeAdaptor(player), player)
     } else {
-      BdLib.logWarn("Attempt to open item container GUI without active item (%s)", this)
+      BdLib.logWarn(
+        "Attempt to open item container GUI without active item (%s)",
+        this
+      )
       null
     }
   }
@@ -50,12 +60,23 @@ trait ItemInventory extends Item with GuiProvider {
     if (stack.getItem == this) {
       makeContainer(makeAdaptor(player), player)
     } else {
-      BdLib.logWarn("Attempt to open item container GUI without active item by '%s' (%s)", player.getCommandSenderName, this)
+      BdLib.logWarn(
+        "Attempt to open item container GUI without active item by '%s' (%s)",
+        player.getCommandSenderName,
+        this
+      )
       null
     }
   }
 
   def doOpenGui(player: EntityPlayer, world: World) {
-    player.openGui(modObj, guiId, world, player.posX.toInt, player.posY.toInt, player.posZ.toInt)
+    player.openGui(
+      modObj,
+      guiId,
+      world,
+      player.posX.toInt,
+      player.posY.toInt,
+      player.posZ.toInt
+    )
   }
 }

@@ -15,36 +15,49 @@ import net.minecraftforge.common.util.ForgeDirection
 import org.lwjgl.opengl.GL11
 
 object RenderUtils {
-  /**
-   * Render a single item side
-   */
-  def doRenderItemSide(d: ForgeDirection, r: RenderBlocks, block: Block, meta: Int) = {
+
+  /** Render a single item side
+    */
+  def doRenderItemSide(
+      d: ForgeDirection,
+      r: RenderBlocks,
+      block: Block,
+      meta: Int
+  ) = {
     val icon = r.getBlockIconFromSideAndMetadata(block, d.ordinal(), meta)
     Tessellator.instance.setNormal(d.offsetX, d.offsetY, d.offsetZ)
     d match {
-      case ForgeDirection.DOWN => r.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.UP => r.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.NORTH => r.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.SOUTH => r.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.WEST => r.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, icon)
-      case ForgeDirection.EAST => r.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, icon)
+      case ForgeDirection.DOWN =>
+        r.renderFaceYNeg(block, 0.0d, 0.0d, 0.0d, icon)
+      case ForgeDirection.UP => r.renderFaceYPos(block, 0.0d, 0.0d, 0.0d, icon)
+      case ForgeDirection.NORTH =>
+        r.renderFaceZNeg(block, 0.0d, 0.0d, 0.0d, icon)
+      case ForgeDirection.SOUTH =>
+        r.renderFaceZPos(block, 0.0d, 0.0d, 0.0d, icon)
+      case ForgeDirection.WEST =>
+        r.renderFaceXNeg(block, 0.0d, 0.0d, 0.0d, icon)
+      case ForgeDirection.EAST =>
+        r.renderFaceXPos(block, 0.0d, 0.0d, 0.0d, icon)
       case _ => sys.error("Invalid side")
     }
   }
 
-  /**
-   * Render a simple block as an item (for gui, item entities etc.)
-   */
-  def renderSimpleBlockItem(block: Block, metadata: Int, renderer: RenderBlocks) {
+  /** Render a simple block as an item (for gui, item entities etc.)
+    */
+  def renderSimpleBlockItem(
+      block: Block,
+      metadata: Int,
+      renderer: RenderBlocks
+  ) {
     block.setBlockBoundsForItemRender()
     renderer.setRenderBoundsFromBlock(block)
     val T = Tessellator.instance
-    GL11.glTranslatef(-0.5F, -0.5F, -0.5F)
+    GL11.glTranslatef(-0.5f, -0.5f, -0.5f)
     for (side <- ForgeDirection.VALID_DIRECTIONS) {
       T.startDrawingQuads()
       doRenderItemSide(side, renderer, block, metadata)
       T.draw()
     }
-    GL11.glTranslatef(0.5F, 0.5F, 0.5F)
+    GL11.glTranslatef(0.5f, 0.5f, 0.5f)
   }
 }

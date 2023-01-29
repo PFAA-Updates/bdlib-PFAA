@@ -18,7 +18,8 @@ import scala.util.parsing.combinator._
 
 class RecipeParser extends JavaTokenParsers {
   // Allows C-style comments
-  protected override val whiteSpace = """(\s|//.*|(?m)/\*(\*(?!/)|[^*])*\*/)+""".r
+  protected override val whiteSpace =
+    """(\s|//.*|(?m)/\*(\*(?!/)|[^*])*\*/)+""".r
 
   // Simple integer without signs
   def int = "\\d+".r ^^ (_.toInt)
@@ -42,7 +43,9 @@ class RecipeParser extends JavaTokenParsers {
   def recipeDuplet = repN(2, recipeChar | "_") ^^ (_.mkString(""))
 
   // Quoted string with escape characters
-  def unescapeStr = stringLiteral ^^ { case x => StringEscapeUtils.unescapeJava(x.substring(1, x.length - 1)) }
+  def unescapeStr = stringLiteral ^^ { case x =>
+    StringEscapeUtils.unescapeJava(x.substring(1, x.length - 1))
+  }
 
   // Identifier or quoted string
   def str = ident | unescapeStr
@@ -50,9 +53,15 @@ class RecipeParser extends JavaTokenParsers {
   // === Item references ===
 
   def specOD = "OD" ~> ":" ~> ident ^^ StackOreDict
-  def specBlock = "B" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackBlock(m, n, i) }
-  def specItem = "I" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ { case m ~ n ~ i => StackItem(m, n, i) }
-  def specGenericStack = "S" ~> ":" ~> str ~ ":" ~ str ^^ { case m ~ c ~ n => StackGeneric(m, n) }
+  def specBlock = "B" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ {
+    case m ~ n ~ i => StackBlock(m, n, i)
+  }
+  def specItem = "I" ~> ":" ~> maybeModId ~ str ~ maybeMeta ^^ {
+    case m ~ n ~ i => StackItem(m, n, i)
+  }
+  def specGenericStack = "S" ~> ":" ~> str ~ ":" ~ str ^^ { case m ~ c ~ n =>
+    StackGeneric(m, n)
+  }
   def specMacro = "$" ~> recipeChar ^^ StackMacro
 
   def specReflect = clsPath ~ ("[" ~> ident <~ "]") ~ maybeMeta ^^ {
@@ -63,7 +72,8 @@ class RecipeParser extends JavaTokenParsers {
     case (p ~ cl) ~ n ~ m => StackGetter(p.mkString("."), cl, n, m)
   }
 
-  def spec = specBlock | specItem | specOD | specGenericStack | specGetter | specReflect | specMacro
+  def spec =
+    specBlock | specItem | specOD | specGenericStack | specGetter | specReflect | specMacro
 
   // Spec with possible number of items
   def specWithCount = spec ~ ("*" ~> int).?
@@ -75,61 +85,87 @@ class RecipeParser extends JavaTokenParsers {
   def cndHaveOD = "HaveOD" ~> str ^^ CndHaveOD
 
   def cndNOT = "!" ~> condition ^^ CndNOT
-  def cndOR = "(" ~> condition ~ "||" ~ condition <~ ")" ^^ { case c1 ~ or ~ c2 => CndOR(c1, c2) }
-  def cndAND = "(" ~> condition ~ "&&" ~ condition <~ ")" ^^ { case c1 ~ and ~ c2 => CndAND(c1, c2) }
+  def cndOR = "(" ~> condition ~ "||" ~ condition <~ ")" ^^ {
+    case c1 ~ or ~ c2 => CndOR(c1, c2)
+  }
+  def cndAND = "(" ~> condition ~ "&&" ~ condition <~ ")" ^^ {
+    case c1 ~ and ~ c2 => CndAND(c1, c2)
+  }
 
-  def condition: Parser[Condition] = cndHaveAPI | cndHaveMod | cndHaveOD | cndNOT | cndOR | cndAND
+  def condition: Parser[Condition] =
+    cndHaveAPI | cndHaveMod | cndHaveOD | cndNOT | cndOR | cndAND
 
   // === Blocks ===
 
-  def recipesSubBlock = "recipes" ~> ("{" ~> recipeStatements <~ "}") ^^ RsRecipes
-  def recipesTopBlock = "recipes" ~> ("{" ~> recipeStatements <~ "}") ^^ CsRecipeBlock
+  def recipesSubBlock =
+    "recipes" ~> ("{" ~> recipeStatements <~ "}") ^^ RsRecipes
+  def recipesTopBlock =
+    "recipes" ~> ("{" ~> recipeStatements <~ "}") ^^ CsRecipeBlock
 
-  def conditionRecipes = "if" ~> condition ~ ("{" ~> recipeStatements <~ "}") ~ ("else" ~> "{" ~> recipeStatements <~ "}").? ^^ {
-    case cond ~ thn ~ els => new RsConditional(cond, thn, els.getOrElse(List.empty))
+  def conditionRecipes =
+    "if" ~> condition ~ ("{" ~> recipeStatements <~ "}") ~ ("else" ~> "{" ~> recipeStatements <~ "}").? ^^ {
+      case cond ~ thn ~ els =>
+        new RsConditional(cond, thn, els.getOrElse(List.empty))
+    }
+
+  def conditionConfig =
+    "if" ~> condition ~ ("<<" ~> configStatements <~ ">>") ~ ("else" ~> "<<" ~> configStatements <~ ">>").? ^^ {
+      case cond ~ thn ~ els =>
+        new CsConditionalConfig(cond, thn, els.getOrElse(List.empty))
+    }
+
+  def conditionBridge = conditionRecipes ^^ { case cond =>
+    CsRecipeBlock(List(cond))
   }
-
-  def conditionConfig = "if" ~> condition ~ ("<<" ~> configStatements <~ ">>") ~ ("else" ~> "<<" ~> configStatements <~ ">>").? ^^ {
-    case cond ~ thn ~ els => new CsConditionalConfig(cond, thn, els.getOrElse(List.empty))
-  }
-
-  def conditionBridge = conditionRecipes ^^ { case cond => CsRecipeBlock(List(cond)) }
 
   // === Statements ===
 
-  def charSpec = recipeChar ~ "=" ~ spec ^^ {
-    case ch ~ eq ~ spec => new RsCharAssign(ch, spec)
+  def charSpec = recipeChar ~ "=" ~ spec ^^ { case ch ~ eq ~ spec =>
+    new RsCharAssign(ch, spec)
   }
 
-  def classMacro = ("def" ~> ident <~ "=") ~ clsPath ^^ {
-    case id ~ (p ~ cl) => RsClassMacro(id, (p :+ cl).mkString("."))
+  def classMacro = ("def" ~> ident <~ "=") ~ clsPath ^^ { case id ~ (p ~ cl) =>
+    RsClassMacro(id, (p :+ cl).mkString("."))
   }
 
-  def recipeShaped3x3 = recipeTriplet ~ recipeTriplet ~ ("=>" ~> specWithCount) ~ recipeTriplet ^^ {
-    case r1 ~ r2 ~ (res ~ n) ~ r3 => RsRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
-  }
+  def recipeShaped3x3 =
+    recipeTriplet ~ recipeTriplet ~ ("=>" ~> specWithCount) ~ recipeTriplet ^^ {
+      case r1 ~ r2 ~ (res ~ n) ~ r3 =>
+        RsRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
+    }
 
-  def recipeShaped2x2 = recipeDuplet ~ recipeDuplet ~ ("=>" ~> specWithCount) ^^ {
-    case r1 ~ r2 ~ (res ~ n) => RsRecipeShaped(Seq(r1, r2), res, n.getOrElse(1))
-  }
+  def recipeShaped2x2 =
+    recipeDuplet ~ recipeDuplet ~ ("=>" ~> specWithCount) ^^ {
+      case r1 ~ r2 ~ (res ~ n) =>
+        RsRecipeShaped(Seq(r1, r2), res, n.getOrElse(1))
+    }
 
-  def recipeShaped9 = recipeTriplet ~ recipeTriplet ~ recipeTriplet ~ ("=>" ~> specWithCount) ^^ {
-    case r1 ~ r2 ~ r3 ~ (res ~ n) => RsRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
-  }
+  def recipeShaped9 =
+    recipeTriplet ~ recipeTriplet ~ recipeTriplet ~ ("=>" ~> specWithCount) ^^ {
+      case r1 ~ r2 ~ r3 ~ (res ~ n) =>
+        RsRecipeShaped(Seq(r1, r2, r3), res, n.getOrElse(1))
+    }
 
-  def recipeShapeless = "shapeless" ~> ":" ~> recipeChar.+ ~ ("=>" ~> specWithCount) ^^ {
-    case r ~ (res ~ n) => RsRecipeShapeless(r.mkString(""), res, n.getOrElse(1))
-  }
+  def recipeShapeless =
+    "shapeless" ~> ":" ~> recipeChar.+ ~ ("=>" ~> specWithCount) ^^ {
+      case r ~ (res ~ n) =>
+        RsRecipeShapeless(r.mkString(""), res, n.getOrElse(1))
+    }
 
-  def recipeSmelting = "smelt" ~> ":" ~> spec ~ ("=>" ~> specWithCount) ~ ("+" ~> decimalNumber <~ "xp").? ^^ {
-    case in ~ (out ~ n) ~ xp => RsRecipeSmelting(in, out, n.getOrElse(1), xp.getOrElse("0").toFloat)
-  }
+  def recipeSmelting =
+    "smelt" ~> ":" ~> spec ~ ("=>" ~> specWithCount) ~ ("+" ~> decimalNumber <~ "xp").? ^^ {
+      case in ~ (out ~ n) ~ xp =>
+        RsRecipeSmelting(in, out, n.getOrElse(1), xp.getOrElse("0").toFloat)
+    }
 
-  def regOreDict = "regOreDict" ~> ":" ~> spec ~ "@WILDCARD".? ~ ("=>" ~> str) ^^ {
-    case spec ~ wildcard ~ id => RsRegOredict(id, spec, wildcard.isDefined)
-  }
+  def regOreDict =
+    "regOreDict" ~> ":" ~> spec ~ "@WILDCARD".? ~ ("=>" ~> str) ^^ {
+      case spec ~ wildcard ~ id => RsRegOredict(id, spec, wildcard.isDefined)
+    }
 
-  def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ { case sp => CsClearRecipes(sp) }
+  def clearRecipes = "clearRecipes" ~> ":" ~> spec ^^ { case sp =>
+    CsClearRecipes(sp)
+  }
 
   def recipeStatement: Parser[RecipeStatement] = (
     charSpec
@@ -143,14 +179,14 @@ class RecipeParser extends JavaTokenParsers {
       | recipeShapeless
       | recipeSmelting
       | regOreDict
-    )
+  )
 
   def configStatement: Parser[ConfigStatement] = (
     recipesTopBlock
       | clearRecipes
       | conditionBridge
       | conditionConfig
-    )
+  )
 
   def configStatements = configStatement.*
   def recipeStatements = recipeStatement.*
@@ -158,7 +194,8 @@ class RecipeParser extends JavaTokenParsers {
   def doParse(r: Reader): List[ConfigStatement] = {
     parseAll(configStatements, r) match {
       case Success(res, next) => return res
-      case NoSuccess(msg, next) => sys.error("Config parsing failed at %s: %s".format(next.pos, msg))
+      case NoSuccess(msg, next) =>
+        sys.error("Config parsing failed at %s: %s".format(next.pos, msg))
     }
   }
 }

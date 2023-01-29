@@ -15,7 +15,14 @@ import net.minecraft.world.World
 
 trait BreakableInventoryBlock extends Block {
   this: HasTE[_ <: BreakableInventoryTile] =>
-  override def breakBlock(world: World, x: Int, y: Int, z: Int, block: Block, meta: Int) {
+  override def breakBlock(
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      block: Block,
+      meta: Int
+  ) {
     if (!world.isRemote) {
       getTE(world, x, y, z).dropItems()
     }

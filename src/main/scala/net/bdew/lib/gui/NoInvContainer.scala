@@ -10,7 +10,11 @@
 package net.bdew.lib.gui
 
 import net.bdew.lib.Misc
-import net.minecraft.entity.player.{EntityPlayer, EntityPlayerMP, InventoryPlayer}
+import net.minecraft.entity.player.{
+  EntityPlayer,
+  EntityPlayerMP,
+  InventoryPlayer
+}
 import net.minecraft.inventory.{Container, Slot}
 import net.minecraft.item.ItemStack
 
@@ -20,22 +24,37 @@ abstract class NoInvContainer extends Container {
 
   def players = Misc.filterType(crafters, classOf[EntityPlayerMP])
 
-  protected def bindPlayerInventory(inv: InventoryPlayer, xOffs: Int, yOffsInv: Int, yOffsHotbar: Int) {
+  protected def bindPlayerInventory(
+      inv: InventoryPlayer,
+      xOffs: Int,
+      yOffsInv: Int,
+      yOffsHotbar: Int
+  ) {
     for (i <- 0 until 3; j <- 0 until 9)
-      addSlotToContainer(new Slot(inv, j + i * 9 + 9, xOffs + j * 18, yOffsInv + i * 18))
+      addSlotToContainer(
+        new Slot(inv, j + i * 9 + 9, xOffs + j * 18, yOffsInv + i * 18)
+      )
 
     for (i <- 0 until 9)
       addSlotToContainer(new Slot(inv, i, xOffs + i * 18, yOffsHotbar))
   }
 
-  override def slotClick(slotNum: Int, button: Int, modifiers: Int, player: EntityPlayer): ItemStack = {
+  override def slotClick(
+      slotNum: Int,
+      button: Int,
+      modifiers: Int,
+      player: EntityPlayer
+  ): ItemStack = {
     if (inventorySlots.isDefinedAt(slotNum)) {
       val slot = getSlot(slotNum)
       if (slot != null && slot.isInstanceOf[SlotClickable])
-        return slot.asInstanceOf[SlotClickable].onClick(button, modifiers, player)
+        return slot
+          .asInstanceOf[SlotClickable]
+          .onClick(button, modifiers, player)
     }
     return super.slotClick(slotNum, button, modifiers, player)
   }
 
-  override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack = null
+  override def transferStackInSlot(player: EntityPlayer, slot: Int): ItemStack =
+    null
 }

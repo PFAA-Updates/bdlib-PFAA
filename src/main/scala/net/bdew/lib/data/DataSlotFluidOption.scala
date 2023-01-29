@@ -13,7 +13,8 @@ import net.bdew.lib.data.base.{DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fluids.{Fluid, FluidRegistry}
 
-case class DataSlotFluidOption(name: String, parent: DataSlotContainer) extends DataSlotOption[Fluid] {
+case class DataSlotFluidOption(name: String, parent: DataSlotContainer)
+    extends DataSlotOption[Fluid] {
   setUpdate(UpdateKind.SAVE, UpdateKind.GUI)
 
   override def save(t: NBTTagCompound, kind: UpdateKind.Value) {

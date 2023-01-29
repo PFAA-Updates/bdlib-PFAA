@@ -16,7 +16,11 @@ import net.minecraft.world.IBlockAccess
 
 trait ConnectedTextureBlock extends Block {
   def edgeIcon: IIcon
-  def canConnect(world: IBlockAccess, origin: BlockRef, target: BlockRef): Boolean
+  def canConnect(
+      world: IBlockAccess,
+      origin: BlockRef,
+      target: BlockRef
+  ): Boolean
 
   override def getRenderType = ConnectedRenderer.id
 }

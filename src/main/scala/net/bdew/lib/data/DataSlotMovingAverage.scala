@@ -9,14 +9,23 @@
 
 package net.bdew.lib.data
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  DataInputStream,
+  DataOutputStream
+}
 
 import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.minecraft.nbt.NBTTagCompound
 
 import scala.collection.mutable
 
-case class DataSlotMovingAverage(name: String, parent: DataSlotContainer, size: Int) extends DataSlot {
+case class DataSlotMovingAverage(
+    name: String,
+    parent: DataSlotContainer,
+    size: Int
+) extends DataSlot {
   val values = mutable.Queue.empty[Double]
   var average: Double = 0
 
@@ -53,7 +62,9 @@ case class DataSlotMovingAverage(name: String, parent: DataSlotContainer, size: 
     } else {
       values.clear()
       if (t.hasKey(name)) {
-        val i = new DataInputStream(new ByteArrayInputStream(t.getByteArray(name)))
+        val i = new DataInputStream(
+          new ByteArrayInputStream(t.getByteArray(name))
+        )
         val len = i.readByte()
         values ++= (for (x <- 0 until Math.min(len, size)) yield i.readDouble())
         i.close()

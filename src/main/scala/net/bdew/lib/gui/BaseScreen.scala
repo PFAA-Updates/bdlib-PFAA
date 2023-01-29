@@ -16,7 +16,8 @@ import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable
 
-abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int) extends GuiContainer(cont) {
+abstract class BaseScreen(cont: Container, xSz: Int, ySz: Int)
+    extends GuiContainer(cont) {
   xSize = xSz
   ySize = ySz
 

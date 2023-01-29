@@ -17,7 +17,9 @@ trait OutputConfigSlots {
   var slot = slotsDef.default
 }
 
-class OutputConfigFluidSlots(val slotsDef: SlotSet) extends OutputConfigFluid with OutputConfigSlots {
+class OutputConfigFluidSlots(val slotsDef: SlotSet)
+    extends OutputConfigFluid
+    with OutputConfigSlots {
   override def id = slotsDef.outputConfigId
   override def read(t: NBTTagCompound) {
     super.read(t)
@@ -29,6 +31,6 @@ class OutputConfigFluidSlots(val slotsDef: SlotSet) extends OutputConfigFluid wi
   }
   override def handleConfigPacket(m: MsgOutputCfg) = m match {
     case MsgOutputCfgSlot(n, id) => slot = slotsDef.get(id)
-    case _ => super.handleConfigPacket(m)
+    case _                       => super.handleConfigPacket(m)
   }
 }

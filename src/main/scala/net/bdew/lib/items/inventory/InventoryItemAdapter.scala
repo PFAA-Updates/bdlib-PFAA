@@ -14,7 +14,12 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
-class InventoryItemAdapter(val player: EntityPlayer, val slot: Int, val size: Int, val tagName: String) extends BaseInventory {
+class InventoryItemAdapter(
+    val player: EntityPlayer,
+    val slot: Int,
+    val size: Int,
+    val tagName: String
+) extends BaseInventory {
   def getSizeInventory = size
   def getStack = player.inventory.getStackInSlot(slot)
 

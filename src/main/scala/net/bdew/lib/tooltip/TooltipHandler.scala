@@ -30,7 +30,13 @@ object TooltipHandler {
     val toAdd = for (provider <- registry) yield {
       try {
         if (provider.shouldHandleTooltip(ev.itemStack))
-          Some(provider.handleTooltip(ev.itemStack, ev.showAdvancedItemTooltips, Client.shiftDown))
+          Some(
+            provider.handleTooltip(
+              ev.itemStack,
+              ev.showAdvancedItemTooltips,
+              Client.shiftDown
+            )
+          )
         else
           None
       } catch {

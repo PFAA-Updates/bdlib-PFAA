@@ -11,10 +11,10 @@ package net.bdew.lib.data.base
 
 import scala.language.implicitConversions
 
-/**
- * Base trait for data slots that hold primitive values
- * Defines some convenience operators to access the value and an implicit conversion to the value
- */
+/** Base trait for data slots that hold primitive values Defines some
+  * convenience operators to access the value and an implicit conversion to the
+  * value
+  */
 
 trait DataSlotVal[T] extends DataSlot {
   var value: T

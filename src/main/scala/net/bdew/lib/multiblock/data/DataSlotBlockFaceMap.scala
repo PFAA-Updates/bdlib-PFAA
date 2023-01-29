@@ -16,15 +16,18 @@ import net.minecraftforge.common.util.ForgeDirection
 
 import scala.collection.mutable
 
-case class DataSlotBlockFaceMap(name: String, parent: DataSlotContainer) extends DataSlot {
+case class DataSlotBlockFaceMap(name: String, parent: DataSlotContainer)
+    extends DataSlot {
   val map = collection.mutable.Map.empty[BlockFace, Int]
 
   setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
   def inverted = map.map(_.swap)
 
-  def ent2arr(x: (BlockFace, Int)) = Array(x._2, x._1.x, x._1.y, x._1.z, x._1.face.ordinal())
-  def arr2ent(x: Array[Int]) = BlockFace(x(1), x(2), x(3), ForgeDirection.values()(x(4))) -> x(0)
+  def ent2arr(x: (BlockFace, Int)) =
+    Array(x._2, x._1.x, x._1.y, x._1.z, x._1.face.ordinal())
+  def arr2ent(x: Array[Int]) =
+    BlockFace(x(1), x(2), x(3), ForgeDirection.values()(x(4))) -> x(0)
 
   import net.bdew.lib.nbt._
 
@@ -44,5 +47,7 @@ object DataSlotBlockFaceMap {
 
   import scala.language.implicitConversions
 
-  implicit def dataSlotBlockFaceMap2map(v: DataSlotBlockFaceMap): mutable.Map[BlockFace, Int] = v.map
+  implicit def dataSlotBlockFaceMap2map(
+      v: DataSlotBlockFaceMap
+  ): mutable.Map[BlockFace, Int] = v.map
 }

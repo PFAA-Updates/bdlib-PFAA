@@ -15,7 +15,9 @@ import net.bdew.lib.multiblock.data.OutputConfig
 import net.bdew.lib.multiblock.interact.{CIOutputFaces, MIOutput}
 import net.minecraftforge.common.util.ForgeDirection
 
-abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T] {
+abstract class TileOutput[T <: OutputConfig]
+    extends TileModule
+    with MIOutput[T] {
   override def getCore = getCoreAs[CIOutputFaces]
 
   def makeCfgObject(face: ForgeDirection): T
@@ -44,7 +46,10 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
 
   def canConnectToFace(d: ForgeDirection): Boolean
 
-  def onConnectionsChanged(added: Set[ForgeDirection], removed: Set[ForgeDirection]) {}
+  def onConnectionsChanged(
+      added: Set[ForgeDirection],
+      removed: Set[ForgeDirection]
+  ) {}
 
   def doRescanFaces() {
     getCore foreach { core =>
@@ -52,8 +57,9 @@ abstract class TileOutput[T <: OutputConfig] extends TileModule with MIOutput[T]
         ForgeDirection.VALID_DIRECTIONS
           filterNot { dir => core.modules.contains(myPos.neighbour(dir)) }
           filter canConnectToFace
-        ).toSet
-      val known = core.outputFaces.filter(_._1.origin == myPos).map(_._1.face).toSet
+      ).toSet
+      val known =
+        core.outputFaces.filter(_._1.origin == myPos).map(_._1.face).toSet
       val toAdd = connections -- known
       val toRemove = known -- connections
       toRemove.foreach(x => core.removeOutput(myPos, x))

@@ -13,7 +13,8 @@ import net.bdew.lib.data.base.{DataSlotContainer, DataSlotVal, UpdateKind}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotItemStack(name: String, parent: DataSlotContainer) extends DataSlotVal[ItemStack] {
+case class DataSlotItemStack(name: String, parent: DataSlotContainer)
+    extends DataSlotVal[ItemStack] {
   var value: ItemStack = null
 
   override def update(v: ItemStack) = {
@@ -28,5 +29,6 @@ case class DataSlotItemStack(name: String, parent: DataSlotContainer) extends Da
     if (value != null) value.writeToNBT(tag)
     t.setTag(name, tag)
   }
-  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value = ItemStack.loadItemStackFromNBT(t.getCompoundTag(name))
+  def load(t: NBTTagCompound, kind: UpdateKind.Value) = value =
+    ItemStack.loadItemStackFromNBT(t.getCompoundTag(name))
 }

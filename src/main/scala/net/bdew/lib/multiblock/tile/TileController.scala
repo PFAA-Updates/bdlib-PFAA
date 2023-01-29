@@ -18,7 +18,8 @@ import net.bdew.lib.multiblock.{MachineCore, ResourceProvider, Tools}
 import net.minecraft.entity.player.EntityPlayer
 
 trait TileController extends TileDataSlots {
-  val modules = new DataSlotPosSet("modules", this).setUpdate(UpdateKind.WORLD, UpdateKind.SAVE)
+  val modules = new DataSlotPosSet("modules", this)
+    .setUpdate(UpdateKind.WORLD, UpdateKind.SAVE)
 
   def resources: ResourceProvider
   def cfg: MachineCore
@@ -29,7 +30,8 @@ trait TileController extends TileDataSlots {
 
   lazy val myPos = BlockRef(xCoord, yCoord, zCoord)
 
-  def getNumOfModules(kind: String) = modules.flatMap(_.getTile[TileModule](getWorldObj)).count(_.kind == kind)
+  def getNumOfModules(kind: String) =
+    modules.flatMap(_.getTile[TileModule](getWorldObj)).count(_.kind == kind)
 
   def onModulesChanged()
   def onClick(player: EntityPlayer)
@@ -58,22 +60,45 @@ trait TileController extends TileDataSlots {
   }
 
   def validateModules() {
-    modules.filter(x => {
-      x.getTile[TileModule](getWorldObj).isEmpty || x.getBlock[BlockModule[TileModule]](getWorldObj).isEmpty
-    }).foreach(x => {
-      BdLib.logWarn("Block at %s is not a valid module, removing from machine %s at %d,%d,%d", x, this.getClass.getSimpleName, xCoord, yCoord, zCoord)
-      modules.remove(x)
-    })
+    modules
+      .filter(x => {
+        x.getTile[TileModule](getWorldObj)
+          .isEmpty || x.getBlock[BlockModule[TileModule]](getWorldObj).isEmpty
+      })
+      .foreach(x => {
+        BdLib.logWarn(
+          "Block at %s is not a valid module, removing from machine %s at %d,%d,%d",
+          x,
+          this.getClass.getSimpleName,
+          xCoord,
+          yCoord,
+          zCoord
+        )
+        modules.remove(x)
+      })
     val reachable = Tools.findReachableModules(getWorldObj, myPos)
-    val toRemove = modules.filterNot(reachable.contains).flatMap(_.getTile[TileModule](getWorldObj))
+    val toRemove = modules
+      .filterNot(reachable.contains)
+      .flatMap(_.getTile[TileModule](getWorldObj))
     acceptNewModules = false
     toRemove.foreach(moduleRemoved)
     toRemove.foreach(_.coreRemoved())
     acceptNewModules = true
     modulesChanged = true
-    modules.map(x =>
-      (x.getBlock[BlockModule[TileModule]](getWorldObj).orNull, x.getTile[TileModule](getWorldObj).orNull)
-    ).filter({ case (a, b) => a.kind != b.kind }).foreach({ case (a, b) => sys.error("Type mismatch between Block/Tile Block=%s(%s) Tile=%s(%s)".format(a.kind, a, b.kind, b)) })
+    modules
+      .map(x =>
+        (
+          x.getBlock[BlockModule[TileModule]](getWorldObj).orNull,
+          x.getTile[TileModule](getWorldObj).orNull
+        )
+      )
+      .filter({ case (a, b) => a.kind != b.kind })
+      .foreach({ case (a, b) =>
+        sys.error(
+          "Type mismatch between Block/Tile Block=%s(%s) Tile=%s(%s)"
+            .format(a.kind, a, b.kind, b)
+        )
+      })
   }
 
   serverTick.listen(() => {

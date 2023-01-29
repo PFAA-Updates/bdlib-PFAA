@@ -16,9 +16,14 @@ import net.minecraft.util.ResourceLocation
 
 import scala.collection.mutable
 
-class WidgetButtonIcon(p: Point, clicked: WidgetButtonIcon => Unit, baseTex: Texture, hoverTex: Texture) extends Widget {
+class WidgetButtonIcon(
+    p: Point,
+    clicked: WidgetButtonIcon => Unit,
+    baseTex: Texture,
+    hoverTex: Texture
+) extends Widget {
   val rect = new Rect(p, 16, 16)
-  val iconRect = new Rect(p +(1, 1), 14, 14)
+  val iconRect = new Rect(p + (1, 1), 14, 14)
 
   var icon: Texture = null
   var hover: String = null
@@ -39,7 +44,12 @@ class WidgetButtonIcon(p: Point, clicked: WidgetButtonIcon => Unit, baseTex: Tex
   }
 
   override def mouseClicked(p: Point, button: Int) {
-    Minecraft.getMinecraft.getSoundHandler.playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F))
+    Minecraft.getMinecraft.getSoundHandler.playSound(
+      PositionedSoundRecord.func_147674_a(
+        new ResourceLocation("gui.button.press"),
+        1.0f
+      )
+    )
     clicked(this)
   }
 }

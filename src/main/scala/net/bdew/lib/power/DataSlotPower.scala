@@ -14,15 +14,16 @@ import net.bdew.lib.data.base.{DataSlot, DataSlotContainer, UpdateKind}
 import net.bdew.lib.machine.PoweredMachine
 import net.minecraft.nbt.NBTTagCompound
 
-case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSlot {
+case class DataSlotPower(name: String, parent: DataSlotContainer)
+    extends DataSlot {
   updateKind = Set(UpdateKind.GUI, UpdateKind.SAVE)
 
-  var stored = 0F
-  var capacity = 0F
-  var maxReceive = 0F
+  var stored = 0f
+  var capacity = 0f
+  var maxReceive = 0f
 
   def inject(v: Float, simulate: Boolean): Float = {
-    val canAdd = Misc.clamp(v, 0F, Misc.min(capacity - stored, maxReceive))
+    val canAdd = Misc.clamp(v, 0f, Misc.min(capacity - stored, maxReceive))
     if ((canAdd > 0) && !simulate) {
       stored += canAdd
       parent.dataSlotChanged(this)
@@ -31,7 +32,7 @@ case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSl
   }
 
   def extract(v: Float, simulate: Boolean): Float = {
-    val canExtract = Misc.clamp(v, 0F, stored)
+    val canExtract = Misc.clamp(v, 0f, stored)
     if ((canExtract > 0) && !simulate) {
       stored -= canExtract
       if (stored < 1) stored = 0
@@ -62,5 +63,3 @@ case class DataSlotPower(name: String, parent: DataSlotContainer) extends DataSl
     }
   }
 }
-
-

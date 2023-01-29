@@ -14,10 +14,9 @@ import net.bdew.lib.network.NetChannel
 import net.minecraft.entity.player.EntityPlayerMP
 
 object NetHandler extends NetChannel("bdew.multiblock") {
-  regServerHandler {
-    case (msg: MsgOutputCfg, p: EntityPlayerMP) =>
-      val te = p.openContainer.asInstanceOf[ContainerOutputFaces].te
-      te.outputConfig(msg.output).handleConfigPacket(msg)
-      te.outputConfig.updated()
+  regServerHandler { case (msg: MsgOutputCfg, p: EntityPlayerMP) =>
+    val te = p.openContainer.asInstanceOf[ContainerOutputFaces].te
+    te.outputConfig(msg.output).handleConfigPacket(msg)
+    te.outputConfig.updated()
   }
 }

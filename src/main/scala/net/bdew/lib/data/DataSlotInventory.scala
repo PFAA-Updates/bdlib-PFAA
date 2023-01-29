@@ -14,7 +14,9 @@ import net.bdew.lib.tile.inventory.BaseInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 
-case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int) extends DataSlot with BaseInventory {
+case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
+    extends DataSlot
+    with BaseInventory {
   setUpdate(UpdateKind.SAVE)
 
   override def getSizeInventory = size
@@ -42,5 +44,3 @@ case class DataSlotInventory(name: String, parent: DataSlotContainer, size: Int)
     t.setTag(name, itemList)
   }
 }
-
-

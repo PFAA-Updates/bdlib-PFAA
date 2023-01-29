@@ -16,7 +16,11 @@ import net.bdew.lib.Misc
 import net.bdew.lib.gui._
 import net.bdew.lib.multiblock.interact.CIOutputFaces
 import net.bdew.lib.render.connected.BlockAdditionalRender
-import net.bdew.lib.sensors.{GenericSensorParameter, GenericSensorType, SensorSystem}
+import net.bdew.lib.sensors.{
+  GenericSensorParameter,
+  GenericSensorType,
+  SensorSystem
+}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
@@ -26,7 +30,8 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
 
   override def defaultParameter = system.DisabledParameter
 
-  case class SensorOutputFlowParameter(output: Int) extends GenericSensorParameter(system) {
+  case class SensorOutputFlowParameter(output: Int)
+      extends GenericSensorParameter(system) {
     override val uid: String = "output." + output
   }
 
@@ -39,23 +44,40 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
       system.DisabledParameter
   }
 
-  override def saveParameter(p: GenericSensorParameter, tag: NBTTagCompound): Unit = p match {
+  override def saveParameter(
+      p: GenericSensorParameter,
+      tag: NBTTagCompound
+  ): Unit = p match {
     case SensorOutputFlowParameter(n) => tag.setInteger("output", n)
-    case _ =>
+    case _                            =>
   }
 
-  override def isValidParameter(p: GenericSensorParameter, obj: TileEntity): Boolean = (p, obj) match {
-    case (SensorOutputFlowParameter(n), x: CIOutputFaces) => x.outputFaces.inverted.isDefinedAt(n)
+  override def isValidParameter(
+      p: GenericSensorParameter,
+      obj: TileEntity
+  ): Boolean = (p, obj) match {
+    case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
+      x.outputFaces.inverted.isDefinedAt(n)
     case (param, _) if param == system.DisabledParameter => true
+    case _                                               => false
+  }
+
+  override def getResult(
+      param: GenericSensorParameter,
+      obj: TileEntity
+  ): Boolean = (param, obj) match {
+    case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
+      getResultFromOutput(x, n)
     case _ => false
   }
 
-  override def getResult(param: GenericSensorParameter, obj: TileEntity): Boolean = (param, obj) match {
-    case (SensorOutputFlowParameter(n), x: CIOutputFaces) => getResultFromOutput(x, n)
-    case _ => false
-  }
-
-  override def paramClicked(current: GenericSensorParameter, item: ItemStack, button: Int, mod: Int, obj: TileEntity) =
+  override def paramClicked(
+      current: GenericSensorParameter,
+      item: ItemStack,
+      button: Int,
+      mod: Int,
+      obj: TileEntity
+  ) =
     if (mod == 0 && (button == 0 || button == 1) && item == null)
       (current, obj) match {
         case (SensorOutputFlowParameter(n), x: CIOutputFaces) =>
@@ -78,36 +100,82 @@ trait SensorOutput extends GenericSensorType[TileEntity, Boolean] {
     else current
 
   @SideOnly(Side.CLIENT)
-  override def drawParameter(rect: Rect, target: DrawTarget, obj: TileEntity, param: GenericSensorParameter): Unit = (param, obj) match {
+  override def drawParameter(
+      rect: Rect,
+      target: DrawTarget,
+      obj: TileEntity,
+      param: GenericSensorParameter
+  ): Unit = (param, obj) match {
     case (SensorOutputFlowParameter(output), te: CIOutputFaces) =>
       val faces = te.outputFaces.inverted
       if (faces.isDefinedAt(output)) {
         val bf = faces(output)
         bf.origin.block(te.getWorldObj) foreach { block =>
-          target.drawTexture(rect, Texture(Texture.BLOCKS, block.getIcon(te.getWorldObj, bf.origin.x, bf.origin.y, bf.origin.z, bf.face.ordinal())))
+          target.drawTexture(
+            rect,
+            Texture(
+              Texture.BLOCKS,
+              block.getIcon(
+                te.getWorldObj,
+                bf.origin.x,
+                bf.origin.y,
+                bf.origin.z,
+                bf.face.ordinal()
+              )
+            )
+          )
           if (block.isInstanceOf[BlockAdditionalRender]) {
-            for (over <- block.asInstanceOf[BlockAdditionalRender].getFaceOverlays(te.getWorldObj, bf.origin.x, bf.origin.y, bf.origin.z, bf.face))
-              target.drawTexture(rect, Texture(Texture.BLOCKS, over.icon), over.color)
+            for (
+              over <- block
+                .asInstanceOf[BlockAdditionalRender]
+                .getFaceOverlays(
+                  te.getWorldObj,
+                  bf.origin.x,
+                  bf.origin.y,
+                  bf.origin.z,
+                  bf.face
+                )
+            )
+              target.drawTexture(
+                rect,
+                Texture(Texture.BLOCKS, over.icon),
+                over.color
+              )
           }
         }
       }
 
-    case _ => target.drawTexture(rect, system.DisabledParameter.texture, system.DisabledParameter.textureColor)
+    case _ =>
+      target.drawTexture(
+        rect,
+        system.DisabledParameter.texture,
+        system.DisabledParameter.textureColor
+      )
   }
 
-  override def getParamTooltip(obj: TileEntity, param: GenericSensorParameter) = (param, obj) match {
-    case (SensorOutputFlowParameter(output), te: CIOutputFaces) =>
-      val faces = te.outputFaces.inverted
-      var list = List.empty[String]
-      list :+= Misc.toLocal(te.resources.unlocalizedOutputName(output))
-      if (faces.isDefinedAt(output)) {
-        val bf = faces(output)
-        bf.origin.block(te.getWorldObj) foreach { block =>
-          list :+= block.getLocalizedName
-          list :+= "%d, %d, %d - %s".format(bf.x, bf.y, bf.z, Misc.toLocal("bdlib.multiblock.face." + bf.face.toString.toLowerCase(Locale.US)))
+  override def getParamTooltip(obj: TileEntity, param: GenericSensorParameter) =
+    (param, obj) match {
+      case (SensorOutputFlowParameter(output), te: CIOutputFaces) =>
+        val faces = te.outputFaces.inverted
+        var list = List.empty[String]
+        list :+= Misc.toLocal(te.resources.unlocalizedOutputName(output))
+        if (faces.isDefinedAt(output)) {
+          val bf = faces(output)
+          bf.origin.block(te.getWorldObj) foreach { block =>
+            list :+= block.getLocalizedName
+            list :+= "%d, %d, %d - %s".format(
+              bf.x,
+              bf.y,
+              bf.z,
+              Misc.toLocal(
+                "bdlib.multiblock.face." + bf.face.toString.toLowerCase(
+                  Locale.US
+                )
+              )
+            )
+          }
         }
-      }
-      list
-    case _ => super.getParamTooltip(obj, param)
-  }
+        list
+      case _ => super.getParamTooltip(obj, param)
+    }
 }
